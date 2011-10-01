@@ -1,0 +1,359 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.dstresearch</groupId>
+  <artifactId>chessxls</artifactId>
+  <version>0.1.0</version>
+  <packaging>war</packaging>
+  <name>Chess Spreadsheet on the Web</name>
+
+	<url>http://www.dstresearch.com</url>
+	<organization>
+		<name>DST Technologies, Inc</name>
+		<url>http://www.dstresearch.com</url>
+	</organization>
+	<inceptionYear>2011</inceptionYear>
+	<scm>
+		<connection>scm:svn:https://www.dstresearch.com/${svn.repo}</connection>
+		<developerConnection>scm:svn:https://www.dstresearch.com/svn/${svn.repo}</developerConnection>
+		<url>http://www.dstresearch.com/svn</url>
+	</scm>
+
+  	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<!-- some basic stuff (DRY) -->
+
+		<!---->
+		<requireCleanSource>false</requireCleanSource>
+
+		<maven-war-plugin.version>2.1.1</maven-war-plugin.version>
+		<!-- Version of log4j -->
+		<log4j.version>1.2.16</log4j.version>
+		<!-- Version of Spring Framework -->
+		<spring.version>3.0.5.RELEASE</spring.version>
+		<!-- Version of GWT SDK -->
+		<gwt.version>2.3.0</gwt.version>
+		<!-- Version of MySQL (when its used) -->
+		<mysql.version>5.1.13</mysql.version>
+		<!-- Version of Apache Derby DB (when its used) -->
+		<derby.version>10.6.1.0</derby.version>
+
+		<svn.repo>pub/chessxls</svn.repo>
+
+		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+	</properties>
+
+	<distributionManagement>
+		<!--
+			defines the location to which project artifacts may be deployed. Be
+			sure to update your settings.xml with the appropriate authentication
+			info.
+		-->
+		<!-- use the following if you're not using a snapshot version. -->
+		<repository>
+			<id>releases</id>
+			<name>Release Repository</name>
+			<url>http://www.dstresearch.com/archiva/repository/releases</url>
+		</repository>
+		<!-- use the following if you ARE using a snapshot version. -->
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Snapshot Repository</name>
+			<url>http://www.dstresearch.com/archiva/repository/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+		</resources>
+
+		<plugins>
+			<!-- Copy static web files before executing gwt:run -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${maven-war-plugin.version}</version>
+ 				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>exploded</goal>
+						</goals>
+					</execution>
+				</executions>
+ 
+				<configuration>
+					<webappDirectory>${webappDirectory}</webappDirectory>
+					<webResources>
+						<resource>
+							<directory>src/main/webapp</directory>
+							<filtering>true</filtering>
+							<includes>
+								<include>**/*.xml</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+
+			<!-- This configuration for the maven-resources-plugin works around
+				bug http://jira.codehaus.org/browse/MRESOURCES-117
+				[resource filtering is iffy (to say the least!)]
+				Remove it when the bug has been addressed. -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.3</version>
+				<configuration>
+					<useDefaultDelimiters>false</useDefaultDelimiters>
+					<delimiters>
+						<delimiter>${*}</delimiter>
+					</delimiters>
+				</configuration>
+			</plugin>
+
+			<!-- JAVADOC -->
+			<!-- To build project-wide javadoc, your best bet is to run
+					'mvn javadoc:aggregate'
+				from the parent project subdirectory
+			-->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.7</version>
+			</plugin>
+			<!--
+				This plug-in makes it easy to track build numbers during development
+			-->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>buildnumber-maven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<phase>validate</phase>
+						<goals>
+							<goal>create</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<doCheck>${requireCleanSource}</doCheck>
+					<revisionOnScmFailure>0</revisionOnScmFailure>
+				</configuration>
+			</plugin>
+			
+			<!-- Jetty: run the webapp in Jetty for testing/debugging purposes -->
+			<!-- mvn -Djetty.port=xxxx jetty:run -->
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+						<version>7.2.2.v20101205</version>
+<!-- 				<version>8.0.0.M2</version>  -->
+				<configuration>
+					<scanIntervalSeconds>3</scanIntervalSeconds>
+					<systemProperties>
+						<systemProperty>
+							<name>org.apache.commons.logging.Log</name>
+							<value>org.apache.commons.logging.impl.Log4JLogger</value>
+						</systemProperty>
+						<systemProperty>
+							<name>slf4j</name>
+							<value>false</value>
+						</systemProperty>
+						<systemProperty>
+							<name>log4j.configuration</name>
+							<value>file:./src/test/resources/jetty/log4j.properties</value>
+						</systemProperty>
+					</systemProperties>
+					<requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
+						<filename>target/yyyy_mm_dd.request.log</filename>
+						<retainDays>2</retainDays>
+						<append>true</append>
+						<extended>false</extended>
+						<logTimeZone>GMT</logTimeZone>
+					</requestLog>
+					<webAppConfig>
+						<contextPath>/chessxls</contextPath>
+						<overrideDescriptor>src/test/resources/jetty/deployment-context.xml</overrideDescriptor>
+						<jettyEnvXml>${webappDirectory}/WEB-INF/jetty-env.xml</jettyEnvXml>
+						<!-- addresses issue with ClassCastException -->
+						<!-- http://stackoverflow.com/questions/2538823/using-maven-and-embedded-jetty-classcastexception -->
+						<parentLoaderPriority>true</parentLoaderPriority>
+					</webAppConfig>
+					<webAppSourceDirectory>${webappDirectory}</webAppSourceDirectory>
+					<loginServices>
+						<loginService implementation="org.eclipse.jetty.security.HashLoginService">
+							<name>ChessXLS</name>
+							<config>${basedir}/src/test/resources/jetty/realm.properties</config>
+						</loginService>
+					</loginServices>
+				</configuration>
+
+				<!-- determine which components we need at runtime with Jetty -->
+				<dependencies>
+					<!-- we want to use log4j as the log subsystem -->
+					<!-- (we need to specify it here, since we said -->
+					<!-- it was only 'provided' in the parent pom ) -->
+					<dependency>
+						<groupId>log4j</groupId>
+						<artifactId>log4j</artifactId>
+						<version>${log4j.version}</version>
+						<type>jar</type>
+					</dependency>
+
+					<!-- using derby for the dbms -->
+					<!-- <dependency> <groupId>org.apache.derby</groupId> <artifactId>derby</artifactId> 
+						<version>${derby.version}</version> </dependency> -->
+					<!-- using mysql for the dbms -->
+					<dependency>
+						<groupId>mysql</groupId>
+						<artifactId>mysql-connector-java</artifactId>
+						<version>${mysql.version}</version>
+					</dependency>
+
+					<dependency>
+						<groupId>org.eclipse.jetty</groupId>
+						<artifactId>jetty-server</artifactId>
+						<version>7.2.2.v20101205</version>
+					</dependency>
+
+				</dependencies>
+			</plugin>
+
+			<!-- GWT Maven Plugin -->
+			<!-- Helpful debugging hint: "mvn gwt:run" -->
+			<!-- For debugging with the full jetty container: start jetty with mvn 
+				package jetty:run, then start gwt with mvn package gwt:run -Dgwt.noserver=true -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>gwt-maven-plugin</artifactId>
+				<version>2.3.0-1</version>
+				<executions>
+					<execution>
+						<goals>
+							<!-- <goal>i18n</goal> -->
+							<goal>compile</goal>
+							<goal>test</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<!-- Plugin configuration. There are many available options, see gwt-maven-plugin 
+					documentation at codehaus.org -->
+				<configuration>
+					<hostedWebapp>${webappDirectory}</hostedWebapp>
+					<!-- <i18nMessagesBundles> <i18nMessagesBundle>com.dstresearch.gwtSample.client.Messages</i18nMessagesBundle> 
+						</i18nMessagesBundles> -->
+					<noserver>true</noserver>
+					<!-- <compileReport>true</compileReport> -->
+					<extraJvmArgs>-Xmx1024M -Xss4096k </extraJvmArgs>
+				</configuration>
+			</plugin>
+			
+		</plugins>
+	</build>
+	
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.geronimo.specs</groupId>
+			<artifactId>geronimo-servlet_2.5_spec</artifactId>
+			<version>1.2</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.inject</groupId>
+			<artifactId>javax.inject</artifactId>
+			<version>1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-servlet</artifactId>
+			<version>${gwt.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.google.gwt</groupId>
+			<artifactId>gwt-user</artifactId>
+			<version>${gwt.version}</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<!-- using rewrite filter to get pretty URL's -->
+		<dependency>
+			<groupId>org.tuckey</groupId>
+			<artifactId>urlrewritefilter</artifactId>
+			<version>3.1.0</version>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- we use log4j for logging API's -->
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>${log4j.version}</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+  
+</project>

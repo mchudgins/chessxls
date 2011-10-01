@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<!-- $Id$ -->
+
+	<!-- Deployment descriptors for debugging (with Jetty).  -->
+	<context-param>
+		<param-name>db.host</param-name>
+		<param-value>${db.jee.host}</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>db.schema</param-name>
+		<param-value>${db.jee.schema}</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>db.userId</param-name>
+		<param-value>mchudgins</param-value>
+	</context-param>
+
+	<context-param>
+		<param-name>db.password</param-name>
+		<param-value>pdp11</param-value>
+	</context-param>
+	
+	<!-- datasource configuration -->
+	<resource-ref>
+	    <description>webapp datastore</description>
+	    <res-ref-name>jdbc/chessxls</res-ref-name>
+	    <res-type>javax.sql.DataSource</res-type>
+	    <res-auth>Container</res-auth>
+	</resource-ref>
+
+	<security-role>
+		<role-name>user</role-name>
+	</security-role>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>Protected Pages</web-resource-name>
+			<url-pattern>/batch</url-pattern>
+			<url-pattern>/batch/</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>user</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<login-config>
+		<auth-method>Basic</auth-method>
+		<realm-name>ChessXLS</realm-name>
+	</login-config>
+
+</web-app>

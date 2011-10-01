@@ -1,0 +1,10 @@
+<module rename-to="TestJig" >
+	<inherits name="com.google.gwt.user.User"/>
+	<inherits name="com.google.gwt.i18n.I18N"/>
+	<inherits name="com.google.gwt.resources.Resources" />
+
+	<entry-point class="com.dstresearch.gwt.behaviours.TestJig" />
+		
+	<!-- Specify the paths for translatable code                    -->
+	<source path="behaviours" />
+</module>

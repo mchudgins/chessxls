@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- $Id: geronimo-deployment.xml 1143 2011-08-01 19:58:32Z mchudgins@dstsystems.com $ -->
+<web:web-app 
+                xmlns:gernaming="http://geronimo.apache.org/xml/ns/naming-1.2"
+       xmlns:geronimo="http://geronimo.apache.org/xml/ns/j2ee/application-2.0"
+       xmlns:persistence="http://java.sun.com/xml/ns/persistence"
+       xmlns:sys="http://geronimo.apache.org/xml/ns/deployment-1.2"
+       xmlns:tomcat="http://geronimo.apache.org/xml/ns/j2ee/web/tomcat-2.0.1"
+       xmlns:web="http://geronimo.apache.org/xml/ns/j2ee/web-2.0.1"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://geronimo.apache.org/xml/ns/j2ee/web-2.0.1 ">
+        <sys:environment>
+                <sys:moduleId>
+                        <sys:groupId>com.dstresearch</sys:groupId>
+                        <sys:artifactId>chessxls</sys:artifactId>
+                        <sys:version>0.1.0</sys:version>
+                </sys:moduleId>
+                <sys:dependencies>
+                        <sys:dependency>
+                                <sys:groupId>console.dbpool</sys:groupId>
+                                <sys:artifactId>jdbc_chessxls</sys:artifactId>
+                                <sys:version>1.0</sys:version>
+                                <sys:type>rar</sys:type>
+                        </sys:dependency>
+                        <sys:dependency>
+                                <sys:groupId>mysql</sys:groupId>
+                                <sys:artifactId>mysql-connector-java</sys:artifactId>
+                                <sys:version>5.1.13</sys:version>
+                        </sys:dependency>
+                        <sys:dependency>
+                                <sys:groupId>log4j</sys:groupId>
+                                <sys:artifactId>log4j</sys:artifactId>
+                                <sys:version>1.2.16</sys:version>
+                                <sys:type>jar</sys:type>
+                        </sys:dependency>
+                </sys:dependencies>
+        </sys:environment>
+
+        <web:context-root>chessxls</web:context-root>
+<!-- 
+       <tomcat:context>
+                <tomcat:parameter name="alarm.chatRoom" value="dstresearch@conference.dstresearch.com" override="true" />
+       </tomcat:context>
+-->
+  
+        <gernaming:resource-ref>
+                <gernaming:ref-name>jdbc/chessxls</gernaming:ref-name>
+		<gernaming:resource-link>jdbc/chessxls</gernaming:resource-link>
+        </gernaming:resource-ref>
+</web:web-app>
+ 

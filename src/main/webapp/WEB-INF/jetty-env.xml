@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+<Configure class="org.eclipse.jetty.webapp.WebAppContext">
+	<Set name="contextPath">/chessxls</Set>
+	<New id="datasource" class="org.eclipse.jetty.plus.jndi.Resource">
+		<Arg></Arg>
+		<Arg>jdbc/chessxls</Arg>
+
+		<!-- <Arg> <New class="org.apache.derby.jdbc.EmbeddedDataSource" > <Set 
+			name="databaseName">../data-jpa/target/openjpa-database</Set> <Set name="user"></Set> 
+			<Set name="password"></Set> </New> </Arg> -->
+		<Arg> <!-- FIXME to use .m2/settings.xml -->
+			<New class="com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource">
+				<Set name="Url">${db.jee.url}</Set>
+				<Set name="User">${db.jee.userId}</Set>
+				<Set name="Password">${db.jee.password}</Set>
+			</New>
+		</Arg>
+	</New>
+</Configure>
+

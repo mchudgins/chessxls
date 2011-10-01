@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- $Id$ -->
+
+<!-- Deployment file for testing chessxls in Tomcat 6.x -->
+
+<Context>
+	<Resource name="jdbc/chessxls" auth="Container"
+		type="javax.sql.DataSource"
+		description="Database for jSPINS Application"
+		driverClassName="com.mysql.jdbc.Driver"
+		url="jdbc:mysql://central.hudgins.lan:3306/chessxls"
+		username="mchudgins"
+		password="pdp11"
+		maxActive="8"
+		maxIdle="4"/>
+</Context>

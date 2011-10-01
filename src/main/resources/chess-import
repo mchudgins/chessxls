@@ -1,0 +1,130 @@
+#! /usr/bin/php
+
+<?php
+
+function	getUserLastName( $str )
+	{
+	$elements	= explode( ' ', $str );
+	return( $elements[ 0 ] );
+	}
+
+function	getTeam( $name, $items )
+	{
+	$team	= array();
+
+	print( $name." team:  " );
+	for ( $i = 0; $i < count( $items ); $i++ )
+		if ( strlen( $items[ $i ] ) )
+			{
+			$team[ $i ]	= getUserLastName( $items[ $i ] );
+			print( $team[ $i ]." " );
+			}
+	print( "\n" );
+
+	return( $team );
+	}
+
+function trimquotes( $a )
+	{
+	for ( $i = 0; $i < count( $a ); $i++ )
+		{
+		$tmp	= ltrim( $a[ $i ], '"' );
+		$a[ $i ]= rtrim( $tmp, '"' );
+		}
+
+	return( $a );
+	}
+
+// translate date as mm/dd/yy to yyyy-mm-dd
+function	fixupDate( $d )
+	{
+	$a	= explode( '/', $d );
+	$year	= $a[ 2 ] + 2000;
+	return( $year.'-'.$a[ 0 ].'-'.$a[ 1 ] );
+	}
+
+function	parseLine( $line )
+	{
+	$items	= explode( ',', $line );
+	$items	= trimquotes( $items );
+
+	// the date
+	if ( strlen( $items[ 1 ] ) )
+		{
+		print( count( $items )." fields in line.\n" );
+		$date	= fixupDate( $items[ 1 ] );
+		print( "play date:  ". $date."\n" );
+		}
+	else
+		return;
+
+	// who is on what team?
+	$white	= getTeam( "white", array_slice( $items, 2, 3 ) );
+	$black	= getTeam( "black", array_slice( $items, 5, 3 ) );
+
+	// and the winner is....?
+	$winner	= $items[ 8 ];
+	print( "winner:  ".$winner."\n" );
+
+	// chess opening
+	$opening= $items[ 25 ];
+	print( "opening:  ".$opening."\n" );
+
+	// pgn file
+	$pgnFile= $items[ 26 ];
+	print( "pgn:  ".$pgnFile."\n" );
+
+	return( array( 'date' => $date,
+		'white' => $white,
+		'black' => $black,
+		'winner' => $winner,
+		'opening' => $opening,
+		'pgn' => $pgnFile  ) );
+	}
+
+function persistDB( $sql, $game )
+	{
+
+	$game_sql	= "insert into games ( playdate, winner, opening, pgn_file ) values ( '"
+				.$game[ 'date' ]."', '"
+				.strtoupper( substr( $game[ 'winner' ], 0, 1 ) )."', "
+				.( strlen( $game[ 'opening' ] ) > 0 ? "'".$game[ 'opening' ]."'" : 'null' ).', '
+				.( strlen( $game[ 'pgn' ] ) > 0 ? "'".$game[ 'pgn' ]."'" : 'null' ).' );';
+	print( $game_sql."\n" );
+	fprintf( $sql, $game_sql."\n" );
+	fprintf( $sql, "select last_insert_id() into @game_key;\n" );
+	for ( $i = 0; $i < count( $game[ "white" ] ); $i++ )
+		fprintf( $sql, "insert into games_teams_xref ( game_id, user, side ) values ( @game_key, '". $game[ "white" ][ $i ]."', 'W' );\n" );
+	for ( $i = 0; $i < count( $game[ "black" ] ); $i++ )
+		fprintf( $sql, "insert into games_teams_xref ( game_id, user, side ) values ( @game_key, '". $game[ "black" ][ $i ]."', 'B' );\n" );
+	}
+
+//
+//	beginning of program's main line of code
+//
+
+$fh	= fopen( "chessxls.csv", "r" );
+$sql	= fopen( "chess.sql", "w" );
+
+$i	= 0;
+
+// skip the header line
+fgets( $fh );
+
+while ( ! feof( $fh ) )
+	{
+	$line	= fgets( $fh );
+	if ( ! feof( $fh ) )
+		{
+		printf( $line );
+		$i++;
+		$game	= parseLine( $line );
+		if ( count( $game ) > 0 )
+			persistDB( $sql, $game );
+		}
+	}
+fclose( $sql );
+fclose( $fh );
+
+print( $i." lines read.\n" );
+?>

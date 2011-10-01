@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE urlrewrite
+        PUBLIC "-//tuckey.org//DTD UrlRewrite 3.0//EN"
+        "http://tuckey.org/res/dtds/urlrewrite3.0.dtd">
+
+<urlrewrite default-match-type="wildcard">
+<!--
+         The purpose of these rewrite rules is to send all css, images, js requests
+        to the static content handler AND to send everything else to the spring dispatcher servlet.
+
+        Therefore, the first three rules must be carefully coordinated with the layout of your webapp's
+        static content directory structure.
+ -->
+
+        <rule>
+                <from>/css/**</from>
+                <to>/css/$1</to>
+        </rule>
+        <rule>
+                <from>/images/**</from>
+                <to>/images/$1</to>
+        </rule>
+
+        <rule>
+                <from>/js/**</from>
+                <to>/js/$1</to>
+        </rule>
+        
+        <rule>
+        		<from>/jsp/**</from>
+        		<to>/$1.jsp</to>
+        </rule>
+        
+        <rule>
+        		<from>/TestJig/**</from>
+        		<to>/TestJig/$1</to>
+        </rule>
+
+        <rule>
+                <from>/**</from>
+                <to>/servlet/$1</to>
+        </rule>
+</urlrewrite>
