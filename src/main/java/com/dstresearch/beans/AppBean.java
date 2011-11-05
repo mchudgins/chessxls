@@ -205,6 +205,8 @@ public class AppBean
 		this.jsPath = this.cfg.getProperty( JS_PATH, "/js" );
 
 		log.info( getName() + " (version " + getVersion() + ") started." );
+		log.info( "css URL's point to " + this.cssPath );
+		log.info( "image URL's point to " + this.imagePath );
 
 		ServletContext ctx = this.cfg.getServletContext();
 		if ( ctx != null )

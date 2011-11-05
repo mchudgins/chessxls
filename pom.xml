@@ -1,10 +1,11 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.dstresearch</groupId>
-  <artifactId>chessxls</artifactId>
-  <version>0.1.0</version>
-  <packaging>war</packaging>
-  <name>Chess Spreadsheet on the Web</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.dstresearch</groupId>
+	<artifactId>chessxls</artifactId>
+	<version>0.1.0</version>
+	<packaging>war</packaging>
+	<name>Chess Spreadsheet on the Web</name>
 
 	<url>http://www.dstresearch.com</url>
 	<organization>
@@ -18,7 +19,7 @@
 		<url>http://www.dstresearch.com/svn</url>
 	</scm>
 
-  	<properties>
+	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<!-- some basic stuff (DRY) -->
 
@@ -36,6 +37,8 @@
 		<mysql.version>5.1.13</mysql.version>
 		<!-- Version of Apache Derby DB (when its used) -->
 		<derby.version>10.6.1.0</derby.version>
+		<!-- Web Resource Optimizer Plugin -->
+		<wro4j.version>1.4.1</wro4j.version>
 
 		<svn.repo>pub/chessxls</svn.repo>
 
@@ -75,12 +78,13 @@
 		</resources>
 
 		<plugins>
+			
 			<!-- Copy static web files before executing gwt:run -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
 				<version>${maven-war-plugin.version}</version>
- 				<executions>
+				<executions>
 					<execution>
 						<phase>process-resources</phase>
 						<goals>
@@ -88,7 +92,7 @@
 						</goals>
 					</execution>
 				</executions>
- 
+
 				<configuration>
 					<webappDirectory>${webappDirectory}</webappDirectory>
 					<webResources>
@@ -138,6 +142,31 @@
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.7</version>
 			</plugin>
+
+			<!-- This plugin can launch java jar's inside the mvn vm -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.2.1</version>
+				<configuration>
+					<mainClass>org.yuksnort.maven.plugins.Scanner</mainClass>
+					<arguments>
+						<argument>${project.build.directory}/${project.build.finalName}.war</argument>
+					</arguments>
+					<includePluginDependencies>true</includePluginDependencies>
+					<executableDependency>
+						<groupId>org.yuksnort.maven.plugins</groupId>
+						<artifactId>gzip-maven-plugin</artifactId>
+					</executableDependency>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.yuksnort.maven.plugins</groupId>
+						<artifactId>gzip-maven-plugin</artifactId>
+						<version>0.0.1-SNAPSHOT</version>
+					</dependency>
+				</dependencies>
+			</plugin>
 			<!--
 				This plug-in makes it easy to track build numbers during development
 			-->
@@ -164,7 +193,7 @@
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-						<version>7.2.2.v20101205</version>
+				<version>7.2.2.v20101205</version>
 <!-- 				<version>8.0.0.M2</version>  -->
 				<configuration>
 					<scanIntervalSeconds>3</scanIntervalSeconds>
@@ -204,6 +233,7 @@
 							<config>${basedir}/src/test/resources/jetty/realm.properties</config>
 						</loginService>
 					</loginServices>
+					<jettyConfig>${webappDirectory}/WEB-INF/jetty-jmx.xml</jettyConfig>
 				</configuration>
 
 				<!-- determine which components we need at runtime with Jetty -->
@@ -247,6 +277,7 @@
 				<version>2.3.0-1</version>
 				<executions>
 					<execution>
+						<phase>prepare-package</phase>
 						<goals>
 							<!-- <goal>i18n</goal> -->
 							<goal>compile</goal>
@@ -266,10 +297,60 @@
 					<extraJvmArgs>-Xmx1024M -Xss4096k </extraJvmArgs>
 				</configuration>
 			</plugin>
-			
+
+			<!-- GZip the static resources (list after GWT) -->
+			<plugin>
+				<groupId>org.yuksnort.maven.plugins</groupId>
+				<artifactId>gzip-maven-plugin</artifactId>
+				<version>0.0.1-SNAPSHOT</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>gzip</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<fileExtensions>
+						<fileExtension>html</fileExtension>
+						<fileExtension>css</fileExtension>
+						<fileExtension>js</fileExtension>
+					</fileExtensions>
+				</configuration>
+			</plugin>
+
+		<!-- wro4j minimizes/massages the css/js files to speed browsers up -->
+			<plugin>
+				<groupId>ro.isdc.wro4j</groupId>
+				<artifactId>wro4j-maven-plugin</artifactId>
+				<version>${wro4j.version}</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<targetGroups>all,g1</targetGroups>
+					<wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
+					<options>IDs</options>
+					<ignoreMissingResources>false</ignoreMissingResources>
+					<destinationFolder>${basedir}/src/main/webapp/wro/</destinationFolder>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>ro.isdc.wro4j</groupId>
+						<artifactId>wro4j-extensions</artifactId>
+						<version>${wro4j.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
 		</plugins>
 	</build>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework</groupId>
@@ -355,5 +436,5 @@
 		</dependency>
 
 	</dependencies>
-  
+
 </project>

@@ -33,9 +33,9 @@
 		
 		<div id="top">
 				<ul id="global-nav">
-					<li><a href="${urlStandings}" class="here">Player Standings</a></li>
+					<li><a href="${urlStandings}" >Player Standings</a></li>
 					<li><a href="${urlTeams}" >Teams</a></li>
-					<li><a href="${urlGames}" >Games</a>
+					<li><a href="${urlGames}" class="here" >Games</a>
 						<ul>
 							<li><a href="?sort=player" >Game List</a></li>
 							<li><a href="?sort=gamesplayed" class="here">Post a Game Result</a></li>
@@ -43,30 +43,31 @@
 				</ul>
 		</div>
 
-		<form method="post" >
-			<div>
-				<label for="playDate">Play Date</label><input type="text" name="playDate" />
-				<table>
-				<thead><tr><td>White</td><td>Player</td><td>Black</td></tr></thead>
-				<tbody>
-				<c:forEach varStatus="status" var="player" items="${players}" >
-					<tr>
-						<td><input type="radio" name="${playerSide}" value="white" /></td>
-						<c:url var="urlPlayer" value="/player/${player}" />
-						<td><a href="${urlPlayer}">${player}</a></td>
-						<td><input type="radio" name="${playerSide}" value="black" /></td>
-					</tr>
-				</c:forEach>
-				<tr class="emptyRow"><td><!-- empty --></td><td><!-- empty --></td><td><!-- empty --></td></tr>
-				<tr>
-					<td><input type="radio" name="winner" value="white" /></td>
-					<td>Winner</td>
-					<td><input type="radio" name="winner" value="black" /></td>
-				</tr>
-				</tbody></table>
+		<form method="post" style="width: 50%; margin: auto;">
+			<div class="centeredDiv" >
+				<label for="playDate" style="font-size: 80%;" >Play Date</label><input type="text" name="playDate" style="font-size: 80%;" />
 			</div>
-			<input type="submit" value="Submit" />
+			<table id="table" style="margin: auto; width: 25%; margin-top: 1em;" >
+			<thead><tr><td>White</td><td>Player</td><td>Black</td></tr></thead>
+			<tbody>
+			<c:forEach varStatus="status" var="player" items="${players}" >
+				<tr>
+					<td><input type="radio" name="${player}" value="white" /></td>
+					<c:url var="urlPlayer" value="/player/${player}" />
+					<td><a href="${urlPlayer}">${player}</a></td>
+					<td><input type="radio" name="${player}" value="black" /></td>
+				</tr>
+			</c:forEach>
+			<tr class="emptyRow"><td><!-- empty --></td><td><!-- empty --></td><td><!-- empty --></td></tr>
+			<tr>
+				<td><input type="radio" name="winner" value="white" /></td>
+				<td>Winner</td>
+				<td><input type="radio" name="winner" value="black" /></td>
+			</tr>
+			</tbody></table>
+			<input type="submit" value="Submit" style="font-size: 80%; float: right;" />
 		</form>
+		
 		<jsp:directive.include file="foot-boilerplate.xml" />
   	</body>
 </html>

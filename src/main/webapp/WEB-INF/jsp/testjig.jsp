@@ -17,6 +17,7 @@
 		<h1>Test Jig</h1>
 		<h2>Selected Request Info</h2>
 		<p>${app.name} Version: ${app.version}</p>
+		<p>App Config Location:  ${testBean.value}</p>
 		<p>Context Path:  ${pageContext.request.contextPath}</p>
 		<p>Original URI:  ${requestScope['javax.servlet.forward.request_uri']}</p>
 		<p>Request URI:  ${pageContext.request.requestURI}</p>

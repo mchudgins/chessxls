@@ -24,7 +24,7 @@ import org.springframework.web.context.ServletContextAware;
  * This class searches for the named value from the following places in the designated order:
  *
  * <ol>
- * <li>In the properties file '/usr/local/etc/spins.properties"</li>
+ * <li>In the properties file '/usr/local/etc/application.properties"</li>
  * <li>In the properties file '/WEB-INF/classes/application.properties'.</li>
  * <li>If a ServletConfig is provided, in its initialization parameters.</li>
  * <li>The ServletContext's initialization parameters.</li>
@@ -40,13 +40,14 @@ import org.springframework.web.context.ServletContextAware;
  */
 public class ConfigurationValue implements ServletContextAware
 	{
+	private static Log		log		= LogFactory.getLog( ConfigurationValue.class );
 	private static final String	PROP_FILE	= "/WEB-INF/classes/application.properties";
-	private static final String	LOCAL_PROP_FILE	= "/usr/local/etc/chessxls.properties";
+	private static final String	LOCAL_PROP_FILE	= "/usr/local/etc/application.properties";
 	private static final Object[][]	emptySet	= { { "yuksnort", "" } };
 	private static String		propFile	= PROP_FILE;
+	private	static String		localPropFile	= LOCAL_PROP_FILE;
 	private static ResourceBundle	properties	= null;
 	private static ResourceBundle	localProperties	= null;
-	private static Log		log		= LogFactory.getLog( ConfigurationValue.class );
 	private ServletContext		ctx		= null;
 	private ServletConfig		cfg		= null;
 
@@ -118,7 +119,7 @@ public class ConfigurationValue implements ServletContextAware
 				if ( ( prop != null ) && ( strTmp = prop.getString( strKey ) ) != null )
 					{
 					strValue = strTmp;
-					location = LOCAL_PROP_FILE;
+					location = localPropFile;
 					return( strValue );
 					}
 				}
@@ -207,18 +208,18 @@ public class ConfigurationValue implements ServletContextAware
 			{
 			try
 				{
-				InputStream is = new FileInputStream( LOCAL_PROP_FILE );
+				InputStream is = new FileInputStream( localPropFile );
 				if ( is != null )
 					ConfigurationValue.localProperties = new PropertyResourceBundle( is );
 				}
 			catch ( FileNotFoundException e )
 				{
 				ConfigurationValue.localProperties = new EmptyResourceBundle();
-				log.info( "Unable to find local property file:  " + LOCAL_PROP_FILE );
+				log.info( "Unable to find local property file:  " + localPropFile );
 				}
 			catch ( SecurityException e )
 				{
-				log.info( "Unable to read local property file:  " + LOCAL_PROP_FILE );
+				log.info( "Unable to read local property file:  " + localPropFile );
 				}
 			catch ( IOException e )
 				{
@@ -264,5 +265,21 @@ public class ConfigurationValue implements ServletContextAware
 		log.trace( "setServletContext()" );
 		this.ctx = ctx;
 		}
-
+	
+	/**
+	 * Sets the default properties filename (bundled in the war)
+	 */
+	public	void	setDefaultPropertiesFilename( String filename )
+		{
+		propFile	= filename;
+		}
+	
+	/**
+	 * Sets the local properties filename
+	 * 
+	 */
+	public	void	setLocalPropertiesFilename( String filename )
+		{
+		localPropFile	= filename;
+		}
 	}

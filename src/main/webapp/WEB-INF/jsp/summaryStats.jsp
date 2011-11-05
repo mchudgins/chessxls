@@ -83,54 +83,56 @@
 					<li><a href="${urlGames}" >Games</a></li>
 				</ul>
 		</div>
-		<div id="chart_area">
-			<div class="center">
-				<div id="chartPerformance"><!-- stupid jsp processor --></div>
-				<div id="chartStreaks"><!-- stupid jsp processor --></div>
+		<div id="pageContent" >
+			<div id="chart_area">
+				<div class="center">
+					<div id="chartPerformance"><!-- stupid jsp processor --></div>
+					<div id="chartStreaks"><!-- stupid jsp processor --></div>
+				</div>
 			</div>
-		</div>
-		
-		<div id="statsTable" >
-		<table id="table" >
-			<thead><tr>
-				<th><h3>Player</h3></th>
-				<th><h3>Games Played</h3></th>
-				<th><h3>Wins</h3></th>
-				<th><h3>Win%</h3></th>
-				<th><h3>Losses</h3></th>
-				<th><h3>Draws</h3></th>
-				<th><h3>Longest Winning Streak</h3></th>
-				<th><h3>Longest Losing Streak</h3></th>
-				<th class="nosort"><h3>Current Streak</h3></th>
-				<th class="nosort"><h3>Last 10</h3></th>
-			</tr></thead>
-			<tbody>
-			<c:forEach varStatus="status" var="c" items="${stats}" >
-				<c:url var="urlPlayer" value="/player/${c.player}" />
-				<tr class="${status.index % 2 == 0 ? 'evenRow' : 'oddRow'}" >
-					<td><a href="${urlPlayer}">${c.player}</a></td>
-					<td class="number_cell">${c.games}</td>
-					<td class="number_cell">${c.wins}</td>
-					<td class="number_cell">
-						<fmt:formatNumber value="${c.winPercentage}" maxFractionDigits="2" minFractionDigits="2"/></td>
-					<td class="number_cell">${c.losses}</td>
-					<td class="number_cell">${c.draws}</td>
-					<td class="number_cell">${c.longestWinStreak}</td>
-					<td class="number_cell">${c.longestLossStreak}</td>
-					<td class="number_cell">${c.currentStreak}</td>
-					<td class="number_cell">${c.last10}</td>
-				</tr>
-			</c:forEach>
-			</tbody>
-		</table>
- 		</div>
- 		<div class="notes">
- 			<h4>Notes</h4>
-	 		<ol>
-	 			<li>The <a name="draws"><em>Draws</em></a> column includes both mutually agreed draws and 'Did Not Finish' games from the spreadsheet.</li>
-	 			<li>Data was updated <fmt:formatDate value="${lastUpdate}" dateStyle="FULL" type="both" /></li>
-	 		</ol>
- 		</div>
+			
+			<div id="statsTable" >
+			<table id="table" >
+				<thead><tr>
+					<th><h3>Player</h3></th>
+					<th><h3>Games Played</h3></th>
+					<th><h3>Wins</h3></th>
+					<th><h3>Win%</h3></th>
+					<th><h3>Losses</h3></th>
+					<th><h3>Draws</h3></th>
+					<th><h3>Longest Winning Streak</h3></th>
+					<th><h3>Longest Losing Streak</h3></th>
+					<th class="nosort"><h3>Current Streak</h3></th>
+					<th class="nosort"><h3>Last 10</h3></th>
+				</tr></thead>
+				<tbody>
+				<c:forEach varStatus="status" var="c" items="${stats}" >
+					<c:url var="urlPlayer" value="/player/${c.player}" />
+					<tr class="${status.index % 2 == 0 ? 'evenRow' : 'oddRow'}" >
+						<td><a href="${urlPlayer}">${c.player}</a></td>
+						<td class="number_cell">${c.games}</td>
+						<td class="number_cell">${c.wins}</td>
+						<td class="number_cell">
+							<fmt:formatNumber value="${c.winPercentage}" maxFractionDigits="2" minFractionDigits="2"/></td>
+						<td class="number_cell">${c.losses}</td>
+						<td class="number_cell">${c.draws}</td>
+						<td class="number_cell">${c.longestWinStreak}</td>
+						<td class="number_cell">${c.longestLossStreak}</td>
+						<td class="number_cell">${c.currentStreak}</td>
+						<td class="number_cell">${c.last10}</td>
+					</tr>
+				</c:forEach>
+				</tbody>
+			</table>
+	 		</div>
+	 		<div class="notes">
+	 			<h4>Notes</h4>
+		 		<ol>
+		 			<li>The <a name="draws"><em>Draws</em></a> column includes both mutually agreed draws and 'Did Not Finish' games from the spreadsheet.</li>
+		 			<li>Data was updated <fmt:formatDate value="${lastUpdate}" dateStyle="FULL" type="both" /></li>
+		 		</ol>
+	 		</div>
+	 	</div>
 		<jsp:directive.include file="foot-boilerplate.xml" />
   	</body>
 </html>

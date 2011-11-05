@@ -20,11 +20,13 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import com.dstresearch.beans.AppBean;
+import com.dstresearch.beans.ContextParam;
 import com.dstresearch.chess.db.DbReader;
 
 /**
@@ -54,6 +56,9 @@ public class MainController
 	
 	@Inject
 	private		DbReader		dbReader	= null;
+	
+	@Inject
+	private		ContextParam		testBean	= null;
 
 	protected String	getContextPath( HttpServletRequest req )
 		{
@@ -70,7 +75,7 @@ public class MainController
 	/**
 	 * Displays the website's welcome page.
 	 */
-	@RequestMapping( "/welcome" )
+	@RequestMapping( value = { "/welcome", "/goodbye" } )
 	public	ModelAndView	welcome( HttpServletRequest req )
 		{
 		log.info( "/welcome" );
@@ -139,7 +144,7 @@ public class MainController
 	 * post your games results here
 	 */
 	
-	@RequestMapping( value="/gameResults", method=RequestMethod.GET )
+	@RequestMapping( value="/games/new", method=RequestMethod.GET )
 	public	ModelAndView	getNewGame( HttpServletRequest req )
 		{
 		log.info( "/newGame:get" );
@@ -149,8 +154,8 @@ public class MainController
 		return( controller.get( this.dbReader, req, this.msgs ) );
 		}
 
-	@RequestMapping( value="/gameResults", method=RequestMethod.POST )
-	public	ModelAndView	postNewGame( HttpServletRequest req )
+	@RequestMapping( value="/games/new", method=RequestMethod.POST )
+	public	ModelAndView	postNewGame( HttpServletRequest req, BindingResult errors )
 		{
 		log.info( "/newGame:post" );
 		
@@ -169,7 +174,7 @@ public class MainController
 		log.info( "/testjig" );
 		
 		ModelAndView	mav	= new ModelAndView( "testjig" );
-		
+		mav.addObject( "testBean", this.testBean );
 		return( mav );
 		}
 	

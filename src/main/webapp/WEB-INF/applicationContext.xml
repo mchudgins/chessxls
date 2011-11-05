@@ -30,7 +30,13 @@
 	</bean>
 	
 	<!-- define general beans -->
-	<bean id="appConfig" class="com.dstresearch.beans.ConfigurationValue" />
+	<bean id="appConfigLocation" class="com.dstresearch.beans.ContextParam" >
+		<property name="key" value="appConfigLocation" />
+	</bean>
+	
+	<bean id="appConfig" class="com.dstresearch.beans.ConfigurationValue" >
+		<property name="localPropertiesFilename" value="#{appConfigLocation.value}" />
+	</bean>
 	<bean id="app" class="com.dstresearch.beans.AppBean" scope="singleton" init-method="init" >
 		<property name="configurationSource" ref="appConfig" />
 		<property name="messageSource" ref="msgs" />
@@ -40,6 +46,10 @@
 	<jee:jndi-lookup id="dataSource" jndi-name="jdbc/chessxls" />	
 	<bean id="dbReader" class="com.dstresearch.chess.db.DbReader" >
 		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="testBean" class="com.dstresearch.beans.ContextParam" >
+		<property name="key" value="appConfigLocation" />
 	</bean>
 	
 </beans>
