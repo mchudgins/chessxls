@@ -44,24 +44,16 @@ public class NewGameHandler
 		return( mav );
 		}
 	
-	public	ModelAndView	post(DbReader reader, HttpServletRequest req, MessageSource msgs )
+	public	ModelAndView	post( DbReader reader, HttpServletRequest req, MessageSource msgs )
 		{
 		ModelAndView	mav	= new ModelAndView( "testjig" );
 
-		// how do they want the data sorted?
-		String	sortOrder;
-		if ( ( sortOrder = req.getParameter( "sort" ) ) != null )
-			{
-			
-			}
 		
 		//
 		// get the list of known players
 		//
 		
-		List< String >	players	= reader.getPlayers();
-		mav.addObject( "players", players );
-			
+		
 //		mav.addObject( "lastUpdate", engine.getLastUpdate() );
 		
 		mav.addObject( "pageTitle", "" );

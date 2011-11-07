@@ -137,7 +137,9 @@ h2,
 th.sorted { background-color: #6699cc; }
 #top,
 #global-nav,
-.even-row { background-color: #e8e8ff; }
+.even-row,
+.headerRow,
+.winnerRow { background-color: #e8e8ff; }
 #global-nav a { background-color: #99ccff; } 
 
 #logo { border-bottom-color: #003366; }
@@ -174,7 +176,8 @@ h2 { font-size: 130%; margin-top: .5em;
 	text-decoration: none; }
 #global-nav a.here:link,
 #global-nav a.here:visited { position: relative; }
-
+.winnerRow { font-size: 130%; }
+.winnerRow td { padding-top: .5em; }
 /* sub nav */
 #global-nav ul {
 	position:absolute;
@@ -215,13 +218,14 @@ table { padding-top: .25em; font-size: 80%; }
 th { padding-right: 2em; padding-left: 1em; }
 td { padding-right: 1em; }
 td.number_cell { text-align: center; }
+td.center { text-align: center; }
 th a:link { text-decoration: none; }
 th a:visited { text-decoration: none; }
 th a:hover { text-decoration: none; }
 th a:active { text-decoration: none; }
 th.sorted { background-image: none; border-top: 1px solid; }
 
-#footer { font-size: 60%; line-height: .8em; float: right; margin-top: 10em; }
+#footer { font-size: 60%; line-height: .8em; float: right; text-align: right; margin-top: 10em; margin-left: auto; }
 @media all and (max-device-width: 600px) {
 	#footer {
 		display: none;

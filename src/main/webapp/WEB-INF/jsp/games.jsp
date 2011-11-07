@@ -11,6 +11,11 @@
 	<jsp:output doctype-root-element="html"
 		doctype-system="about:legacy-compat" />    
  	 
+<!-- Setup URLs -->
+<c:url var="urlStandings" value="/standings" />
+<c:url var="urlTeams" value="/teams" />
+<c:url var="urlGames" value="/games" />
+ 	 
 <html>
 	<head>
 		<title>Chess XLS ${pageTitle}</title>
@@ -25,12 +30,12 @@
 		
 		<div id="top">
 				<ul id="global-nav">
-					<li><a href="${pageContext.request.contextPath}/standings">Player Standings</a></li>
-					<li><a href="${pageContext.request.contextPath}/teams">Teams</a></li>
-					<li><a href="${pageContext.request.contextPath}/games" class="here">Games</a>
+					<li><a href="${urlStandings}">Player Standings</a></li>
+					<li><a href="${urlTeams}">Teams</a></li>
+					<li><a href="${urlGames}" class="here">Games</a>
 						<ul>
-							<li><a href="?sort=player" class="here">Option 1</a></li>
-							<li><a href="?sort=winpercentage">Option 2</a></li>
+							<li><a href="${urlGames}" class="here">Game List</a></li>
+							<li><a href="${urlGames}?new">Post a Game Result</a></li>
 						</ul></li>
 				</ul>
 		</div>

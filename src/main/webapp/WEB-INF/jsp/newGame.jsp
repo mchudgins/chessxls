@@ -11,6 +11,10 @@
 	<jsp:output doctype-root-element="html"
 		doctype-system="about:legacy-compat" />
 		
+<!-- what time is it? -->
+<jsp:useBean id="now" class="java.util.Date" scope="page" />
+<fmt:formatDate var="maxDate" value="${now}" pattern="yyyy-MM-dd" />
+		
 <!-- Setup URLs -->
 <c:url var="urlStandings" value="/standings" />
 <c:url var="urlTeams" value="/teams" />
@@ -26,7 +30,8 @@
 	<head>
 		<title>Chess XLS ${pageTitle}</title>
 		<jsp:directive.include file="head-boilerplate.xml" />
-
+		<link href="${app.cssPath}/960fluid-gs.css" media="screen" rel="stylesheet" type="text/css" />
+		<link href="${app.cssPath}/formalize.css" media="screen" rel="stylesheet" type="text/css" />
  	</head>
 	<body>
 		<h1>Tim's <em>Official</em> Chess Spreadsheet</h1>
@@ -37,36 +42,44 @@
 					<li><a href="${urlTeams}" >Teams</a></li>
 					<li><a href="${urlGames}" class="here" >Games</a>
 						<ul>
-							<li><a href="?sort=player" >Game List</a></li>
-							<li><a href="?sort=gamesplayed" class="here">Post a Game Result</a></li>
+							<li><a href="${urlGames}">Game List</a></li>
+							<li><a href="${urlGames}?new" class="here">Post a Game Result</a></li>
 						</ul></li>
 				</ul>
 		</div>
 
-		<form method="post" style="width: 50%; margin: auto;">
-			<div class="centeredDiv" >
-				<label for="playDate" style="font-size: 80%;" >Play Date</label><input type="text" name="playDate" style="font-size: 80%;" />
+		<div class="container container_12" >
+		<form class="grid_12" method="post" >
+			<div class="grid_4 prefix_4 suffix_4" >
+				<label for="playDate" style="margin-right: 2em;">Play Date</label>
+				<input type="date" name="playDate" value="${maxDate}"
+					autofocus="on" max="${maxDate}" required="required" />
 			</div>
-			<table id="table" style="margin: auto; width: 25%; margin-top: 1em;" >
-			<thead><tr><td>White</td><td>Player</td><td>Black</td></tr></thead>
-			<tbody>
-			<c:forEach varStatus="status" var="player" items="${players}" >
-				<tr>
-					<td><input type="radio" name="${player}" value="white" /></td>
-					<c:url var="urlPlayer" value="/player/${player}" />
-					<td><a href="${urlPlayer}">${player}</a></td>
-					<td><input type="radio" name="${player}" value="black" /></td>
+			<div class="grid_6 prefix_3 suffix_3">
+				<table id="table" >
+				<thead class="headerRow"><tr><th>White</th><th>Player</th><th>Black</th><th>Not Present</th></tr></thead>
+				<tbody>
+				<c:forEach varStatus="status" var="player" items="${players}" >
+					<tr>
+						<td class="center"><input type="radio" name="${player}" value="white" /></td>
+						<c:url var="urlPlayer" value="/player/${player}" />
+						<td class="center"><a href="${urlPlayer}">${player}</a></td>
+						<td class="center"><input type="radio" name="${player}" value="black" /></td>
+						<td class="center"><input type="radio" name="${player}" value="Not Present" checked="checked"/></td>
+					</tr>
+				</c:forEach>
+				<tr class="winnerRow">
+					<td class="center"><input type="radio" name="winner" value="white" /></td>
+					<td class="center">Winner</td>
+					<td class="center"><input type="radio" name="winner" value="black" /></td>
 				</tr>
-			</c:forEach>
-			<tr class="emptyRow"><td><!-- empty --></td><td><!-- empty --></td><td><!-- empty --></td></tr>
-			<tr>
-				<td><input type="radio" name="winner" value="white" /></td>
-				<td>Winner</td>
-				<td><input type="radio" name="winner" value="black" /></td>
-			</tr>
-			</tbody></table>
-			<input type="submit" value="Submit" style="font-size: 80%; float: right;" />
+				</tbody></table>
+			</div>
+			<div class="grid_1 prefix_8 suffix_3" style="font-size: 80%;" >
+				<input type="submit" value="Submit" />
+			</div>
 		</form>
+		</div>
 		
 		<jsp:directive.include file="foot-boilerplate.xml" />
   	</body>

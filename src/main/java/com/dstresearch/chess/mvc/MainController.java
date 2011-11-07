@@ -87,7 +87,7 @@ public class MainController
 	/**
 	 * Display the Summary Stats
 	 */
-	@RequestMapping( "/" )
+	@RequestMapping( value = { "/", "/standings" } )
 	public	ModelAndView	summaryStats( HttpServletRequest req )
 		{
 		log.info( "/" );
@@ -96,12 +96,6 @@ public class MainController
 		String	thisURL	= this.getContextPath( req );
 		
 		return( controller.get( this.dbReader, req, this.msgs, thisURL ) );
-		}
-	
-	@RequestMapping( "/standings" )
-	public	ModelAndView	standings( HttpServletRequest req )
-		{
-		return( this.summaryStats( req ) );
 		}
 	
 	@RequestMapping( "/teams" )
@@ -144,7 +138,7 @@ public class MainController
 	 * post your games results here
 	 */
 	
-	@RequestMapping( value="/games/new", method=RequestMethod.GET )
+	@RequestMapping( value="/games", method=RequestMethod.GET, params="new" )
 	public	ModelAndView	getNewGame( HttpServletRequest req )
 		{
 		log.info( "/newGame:get" );
@@ -154,7 +148,7 @@ public class MainController
 		return( controller.get( this.dbReader, req, this.msgs ) );
 		}
 
-	@RequestMapping( value="/games/new", method=RequestMethod.POST )
+	@RequestMapping( value="/games", method=RequestMethod.POST )
 	public	ModelAndView	postNewGame( HttpServletRequest req, BindingResult errors )
 		{
 		log.info( "/newGame:post" );
