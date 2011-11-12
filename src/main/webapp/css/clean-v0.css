@@ -225,7 +225,9 @@ th a:hover { text-decoration: none; }
 th a:active { text-decoration: none; }
 th.sorted { background-image: none; border-top: 1px solid; }
 
-#footer { font-size: 60%; line-height: .8em; float: right; text-align: right; margin-top: 10em; margin-left: auto; }
+#footer { font-size: 60%; line-height: 60%; float: right; text-align: right;
+	margin-top: 10em; margin-left: auto; padding-top: 1em; }
+#footer p { padding-bottom: 0; }
 @media all and (max-device-width: 600px) {
 	#footer {
 		display: none;
