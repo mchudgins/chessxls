@@ -1,0 +1,87 @@
+<jsp:root
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:local="urn:jsptagdir:/WEB-INF/tags/"
+    xmlns:dry="http://www.dstresearch.com/dstres"
+    xmlns:sf="http://www.springframework.org/tags/form"
+    version="2.1" >
+	<jsp:directive.page contentType="text/html; charset=ISO-8859-1" isELIgnored="false" />
+	<jsp:output omit-xml-declaration="true" />
+<dry:html>
+<!-- what time is it? -->
+<jsp:useBean id="now" class="java.util.Date" scope="page" />
+<fmt:formatDate var="maxDate" value="${now}" pattern="yyyy-MM-dd" />
+		
+	<head>
+ 		<local:header />
+ 	</head>
+	<body>
+		<local:bannerWithNav />
+		
+		<div class="container" >
+			<c:choose>
+				<c:when test="${fn:length( error ) gt 0 }" >
+					<div class="error alert-message">${error}</div>
+				</c:when>
+			</c:choose>
+			<form class="" method="post" ><fieldset>
+
+				<div class="clearfix" >
+					<label for="playDate" style="padding-right: 2em;" >Play Date</label>
+					<input type="date" name="playDate"
+						value="${ ( playDate != null ) ? playDate : maxDate }"
+						autofocus="on" max="${maxDate}" required="required" />
+				</div>
+<!-- 
+				<div class="clearfix" >
+					<label for="openings" style="padding-right: 2em;" >Opening</label>
+					<select name="openings" >
+						<c:forEach var="opening" items="${game.openings}" >
+							<option value="${opening}" >${opening}</option>
+						</c:forEach>
+					</select>
+				</div>
+ -->					
+				<div class="span16">
+					<table class="zebra-striped">
+						<thead class="headerRow">
+							<tr>
+								<th>White</th>
+								<th>Player</th>
+								<th>Black</th>
+								<th>Not Present</th>
+							</tr>
+						</thead>
+						<tbody>
+							<c:forEach varStatus="status" var="player" items="${players}" >
+								<tr>
+									<td><input type="radio" name="${player}" value="white" /></td>
+									<c:url var="urlPlayer" value="/player/${player}" />
+									<td><a href="${urlPlayer}">${player}</a></td>
+									<td><input type="radio" name="${player}" value="black" /></td>
+									<td><input type="radio" name="${player}" value="Not Present" checked="checked"/></td>
+								</tr>
+							</c:forEach>
+							<tr class="winnerRow">
+								<td><input type="radio" name="winner" value="white" /></td>
+								<td>Winner</td>
+								<td><input type="radio" name="winner" value="black" /></td>
+								<td><input type="radio" name="winner" value="draw" /> (Draw)</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="actions" >
+					<input type="submit" value="Submit" class="btn primary" />&#160;
+					<button type="reset" class="btn">Reset</button>
+				</div>
+			</fieldset></form>
+		</div>
+		
+		<local:footer />
+  	</body>
+</dry:html>
+</jsp:root>

@@ -1,0 +1,64 @@
+<!-- $Id$ -->
+<jsp:root
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:dry="http://www.dstresearch.com/dstres"
+    xmlns:local="urn:jsptagdir:/WEB-INF/tags/"
+    xmlns:sf="http://www.springframework.org/tags/form"
+    xmlns="http://www.w3.org/1999/xhtml"
+    version="2.1">
+	<jsp:directive.page contentType="text/html" isELIgnored="false" pageEncoding="UTF-8" />
+	<jsp:output omit-xml-declaration="true" />
+<dry:html> 	 
+ 	 
+	<head>
+		<local:header />
+ 	</head>
+	<body>
+		<local:bannerWithNav />
+		
+		<div class="container" >
+			<h2>Game ${game.id}</h2>
+			
+			<div class="span16" >
+				<sf:form class="" method="post" modelAttribute="game"><fieldset>
+					<div class="clearfix" >
+						<label for="playDate" style="margin-right: 2em;">Play Date</label>
+						<sf:input id="playDate" disabled="true" path="date"
+							autofocus="on" />
+					</div>
+					<div class="span16">
+						<table class="zebra-striped">
+						<thead class="headerRow"><tr><th>White</th><th>Player</th><th>Black</th><th>Draw</th></tr></thead>
+						<tbody>
+ 					
+						<c:forEach varStatus="status" var="player" items="${game.players}" >
+							<tr>
+								<td><local:radiobutton name="${player.key}" value="W"
+									checked="${ player.value == 'W' ? 'checked' : '' }" /></td>
+								<c:url var="urlPlayer" value="/player/${player.key}" />
+								<td><a href="${urlPlayer}">${player.key}</a></td>
+								<td><local:radiobutton name="${player.key}" value="B"
+									checked="${ player.value == 'B' ? 'checked' : '' }" /></td>
+								<td><!-- * --></td>
+							</tr>
+						</c:forEach>
+					
+						<tr class="winnerRow">
+							<td><sf:radiobutton disabled='true' path="winner" value="W" /></td>
+							<td>Winner</td>
+							<td><sf:radiobutton disabled='true' path="winner" value="B" /></td>
+							<td><sf:radiobutton disabled='true' path="winner" value="D" /> </td>
+						</tr>
+						</tbody></table>
+					</div>
+				</fieldset></sf:form>
+			</div>
+		</div>
+				 		
+		<local:footer />
+  	</body>
+</dry:html>
+</jsp:root>

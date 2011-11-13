@@ -1,20 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!-- $Id$ -->
 <jsp:root
 	xmlns:jsp="http://java.sun.com/JSP/Page"
     xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:dry="http://www.dstresearch.com/dstres"
     xmlns="http://www.w3.org/1999/xhtml"
-    version="2.0">
-<jsp:directive.page contentType="text/html" isELIgnored="false" pageEncoding="UTF-8" />
+    version="2.1">
+	<jsp:directive.page contentType="text/html" isELIgnored="false" pageEncoding="UTF-8" />
 	<jsp:output omit-xml-declaration="true" />
-	<jsp:output doctype-root-element="html"
-		doctype-system="about:legacy-compat" />    
- 	 
-<html>
+<dry:html>
 	<head>
 		<title>Chess XLS ${pageTitle}</title>
-		<jsp:directive.include file="head-boilerplate.xml" />
+		<dry:header css="clean-v0.css" />
 		<!-- this one little ol' bit o' css is needed in the jsp file because the background image logo url relies on the current app.imagePath -->
  	</head>
 	<body>
@@ -601,7 +600,7 @@
 	 			<li>Data was updated <fmt:formatDate value="${lastUpdate}" dateStyle="FULL" type="both" /></li>
 	 		</ol>
  		</div>
-		<jsp:directive.include file="foot-boilerplate.xml" />
+		<dry:footer />
 
 		<script type="text/javascript" src="${app.jsPath}/tinytable.js"><!-- @#$! jsp compiler --></script>
 		<script type="text/javascript"> 
@@ -630,5 +629,5 @@
 			});
 		</script> 
   	</body>
-</html>
+</dry:html>
 </jsp:root>
