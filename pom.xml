@@ -76,6 +76,16 @@
 				</includes>
 			</resource>
 		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</testResource>
+		</testResources>
 
 		<plugins>
 			
@@ -208,7 +218,7 @@
 						</systemProperty>
 						<systemProperty>
 							<name>log4j.configuration</name>
-							<value>file:./src/test/resources/jetty/log4j.properties</value>
+							<value>file:${project.build.directory}/test-classes/jetty/log4j.properties</value>
 						</systemProperty>
 					</systemProperties>
 					<requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
@@ -220,20 +230,20 @@
 					</requestLog>
 					<webAppConfig>
 						<contextPath>/chessxls</contextPath>
-						<overrideDescriptor>src/test/resources/jetty/deployment-context.xml</overrideDescriptor>
-						<jettyEnvXml>${webappDirectory}/WEB-INF/jetty-env.xml</jettyEnvXml>
+						<overrideDescriptor>${project.build.directory}/test-classes/jetty/deployment-context.xml</overrideDescriptor>
+						<jettyEnvXml>${project.build.directory}/test-classes/jetty/jetty-env.xml</jettyEnvXml>
 						<!-- addresses issue with ClassCastException -->
 						<!-- http://stackoverflow.com/questions/2538823/using-maven-and-embedded-jetty-classcastexception -->
 						<parentLoaderPriority>true</parentLoaderPriority>
 					</webAppConfig>
-					<webAppSourceDirectory>${webappDirectory}</webAppSourceDirectory>
+					<!-- <webAppSourceDirectory>${webappDirectory}</webAppSourceDirectory> -->
 					<loginServices>
 						<loginService implementation="org.eclipse.jetty.security.HashLoginService">
 							<name>ChessXLS</name>
-							<config>${basedir}/src/test/resources/jetty/realm.properties</config>
+							<config>file:${project.build.directory}/test-classes/jetty/realm.properties</config>
 						</loginService>
 					</loginServices>
-					<jettyConfig>${webappDirectory}/WEB-INF/jetty-jmx.xml</jettyConfig>
+					<jettyConfig>${project.build.directory}/test-classes/jetty/jetty-jmx.xml</jettyConfig>
 				</configuration>
 
 				<!-- determine which components we need at runtime with Jetty -->
@@ -433,6 +443,12 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>${mysql.version}</version>
 			<scope>test</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.dstresearch</groupId>
+			<artifactId>servlet-helper</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
 	</dependencies>

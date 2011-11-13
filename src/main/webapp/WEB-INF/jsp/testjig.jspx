@@ -1,23 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:fn="htp://java.sun.com/jsp/jstl/functions" version="2.0">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:dry="http://www.dstresearch.com/dstres"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:local="urn:jsptagdir:/WEB-INF/tags/"
+	xmlns:fn="htp://java.sun.com/jsp/jstl/functions" version="2.1">
 	<jsp:directive.page contentType="text/html" isELIgnored="false" pageEncoding="UTF-8" />
 		<jsp:output omit-xml-declaration="true" />
-		<jsp:output doctype-root-element="HTML" 
-		doctype-system="about:legacy-compat" />    
-
-<html>
+<dry:html>
 	<head>
 		<title>ChessXLS ${pageTitle}</title>
-		<jsp:directive.include file="head-boilerplate.xml" />
+		<local:header />
 	</head>
 	<body>
-		<h1>Test Jig</h1>
+		<div class="container" >
 		<h2>Selected Request Info</h2>
 		<p>${app.name} Version: ${app.version}</p>
-		<p>App Config Location:  ${testBean.value}</p>
 		<p>Context Path:  ${pageContext.request.contextPath}</p>
 		<p>Original URI:  ${requestScope['javax.servlet.forward.request_uri']}</p>
 		<p>Request URI:  ${pageContext.request.requestURI}</p>
@@ -41,8 +40,9 @@
 			</c:forEach>
 		</table>
   -->
-
-		<jsp:directive.include file="foot-boilerplate.xml" />
+	
+		<local:footer />
+		</div>
 	</body>
-</html>
+</dry:html>
 </jsp:root>

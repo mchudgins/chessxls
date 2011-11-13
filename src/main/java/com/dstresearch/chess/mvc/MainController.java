@@ -25,8 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import com.dstresearch.beans.AppBean;
-import com.dstresearch.beans.ContextParam;
+import com.dstresearch.util.AppBean;
 import com.dstresearch.chess.db.DbReader;
 
 /**
@@ -57,9 +56,6 @@ public class MainController
 	@Inject
 	private		DbReader		dbReader	= null;
 	
-	@Inject
-	private		ContextParam		testBean	= null;
-
 	protected String	getContextPath( HttpServletRequest req )
 		{
 		if ( req.getContextPath().equals( "/" ) )
@@ -95,7 +91,7 @@ public class MainController
 		
 		String	thisURL	= this.getContextPath( req );
 		
-		return( controller.get( this.dbReader, req, this.msgs, thisURL ) );
+		return( controller.get( this.dbReader, req, this.msgs, "/standings" ) );
 		}
 	
 	@RequestMapping( "/teams" )
@@ -105,21 +101,26 @@ public class MainController
 		
 		TeamHandler	controller	= new TeamHandler();
 		
-		String	thisURL	= this.getContextPath( req ) + "/teams";
-		
-		return( controller.get( this.dbReader, req, this.msgs, thisURL ) );
+		return( controller.get( this.dbReader, req, this.msgs, "/teams" ) );
 		}
 	
-	@RequestMapping( "/games" )
+	@RequestMapping( "/game" )
 	public	ModelAndView	games( HttpServletRequest req )
 		{
 		log.info( "/teams" );
 		
 		GameHandler	controller	= new GameHandler();
 		
-		String	thisURL	= this.getContextPath( req ) + "/games";
+		return( controller.get( this.dbReader, req, this.msgs, "/games" ) );
+		}
+	
+	@RequestMapping( "/game/{id}" )
+	public	ModelAndView	game( HttpServletRequest req, @PathVariable long id )
+		{
+		log.info( "/game/" + id );
+		GameHandler	controller	= new GameHandler();
 		
-		return( controller.get( this.dbReader, req, this.msgs, thisURL ) );
+		return( controller.displayGame( this.dbReader, req, this.msgs, "/game", id ) );
 		}
 	
 	@RequestMapping( "/player/{Player}" )
@@ -129,33 +130,31 @@ public class MainController
 		
 		PlayerHandler	controller	= new PlayerHandler();
 		
-		String	thisURL	= this.getContextPath( req );
-		
-		return( controller.get( this.dbReader, req, this.msgs, thisURL ) );
+		return( controller.get( this.dbReader, req, this.msgs, "/player/" + Player ) );
 		}
 	
 	/**
 	 * post your games results here
 	 */
 	
-	@RequestMapping( value="/games", method=RequestMethod.GET, params="new" )
+	@RequestMapping( value="/game", method=RequestMethod.GET, params="new" )
 	public	ModelAndView	getNewGame( HttpServletRequest req )
 		{
 		log.info( "/newGame:get" );
 		
 		NewGameHandler controller	= new NewGameHandler();
 		
-		return( controller.get( this.dbReader, req, this.msgs ) );
+		return( controller.get( this.dbReader, req, this.msgs, "/game" ) );
 		}
 
-	@RequestMapping( value="/games", method=RequestMethod.POST )
-	public	ModelAndView	postNewGame( HttpServletRequest req, BindingResult errors )
+	@RequestMapping( value="/game", method=RequestMethod.POST )
+	public	ModelAndView	postNewGame( HttpServletRequest req ) throws Exception
 		{
 		log.info( "/newGame:post" );
 		
 		NewGameHandler controller	= new NewGameHandler();
 		
-		return( controller.post( this.dbReader, req, this.msgs ) );
+		return( controller.post( this.dbReader, req, this.msgs, "/game" ) );
 		}
 	
 	/**
@@ -168,7 +167,6 @@ public class MainController
 		log.info( "/testjig" );
 		
 		ModelAndView	mav	= new ModelAndView( "testjig" );
-		mav.addObject( "testBean", this.testBean );
 		return( mav );
 		}
 	

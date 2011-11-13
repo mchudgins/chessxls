@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:dry="http://www.dstresearch.com/dstres"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" version="2.0" >
+	<dry:header css="clean-v1.css" />
+	
+	<title>Chess XLS ${pageTitle}</title>
+	<!-- this one little ol' bit o' css is needed in the jsp file because the background image logo url relies on the current app.imagePath -->
+	<style type="text/css"> 
+		h1 { background-image: url(${app.imagePath}/chessxls-logo.png); background-repeat: no-repeat; background-position: right; height: 60px; }
+	</style>
+	
+</jsp:root>

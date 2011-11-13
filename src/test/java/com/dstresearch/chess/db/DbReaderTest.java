@@ -5,6 +5,7 @@
  */
 package com.dstresearch.chess.db;
 
+import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
@@ -76,5 +77,17 @@ public class DbReaderTest
 			log.info( "Rslt:  " + gpr.result );
 			log.info( "    :  " + gpr.getScore() );
 			}
+		}
+	
+	@Test
+	public	void	openings()
+		{
+		List< String > openings;
+		
+		openings	= this.reader.getOpenings();
+		assertTrue( "null list of openings", openings != null );
+		
+		for ( String o : openings )
+			log.info( o );
 		}
 	}

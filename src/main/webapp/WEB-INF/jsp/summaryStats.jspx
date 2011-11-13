@@ -1,31 +1,19 @@
 <!-- $Id$ -->
 <jsp:root
 	xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
-    xmlns="http://www.w3.org/1999/xhtml"
-    version="2.0">
-<jsp:directive.page contentType="text/html" isELIgnored="false" pageEncoding="UTF-8" />
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:dry="http://www.dstresearch.com/dstres"
+    xmlns:local="urn:jsptagdir:/WEB-INF/tags/"
+	xmlns="http://www.w3.org/1999/xhtml"
+	version="2.1">
+	<jsp:directive.page contentType="text/html" isELIgnored="false" pageEncoding="UTF-8" />
 	<jsp:output omit-xml-declaration="true" />
-	<jsp:output doctype-root-element="html"
-		doctype-system="about:legacy-compat" />
+<dry:html>
 		
-<!-- Setup URLs -->
-<c:url var="urlStandings" value="/standings" />
-<c:url var="urlTeams" value="/teams" />
-<c:url var="urlGames" value="/games" />
-
-<!-- compute class="here" attribute for subnav menu -->
-<c:set var="classPlayer" value="${ ( param.sort=='player' || param.sort==null ) ? 'here' : '' }" /> 
-<c:set var="classGamesPlayed" value="${param.sort=='gamesplayed' ? 'here' : '' }" />
-<c:set var="classWins" value="${param.sort=='wins' ? 'here' : '' }" />   
-<c:set var="classWinpercentage" value="${param.sort=='winpercentage' ? 'here' : '' }" />
- 	 
-<html>
 	<head>
-		<title>Chess XLS ${pageTitle}</title>
-		<jsp:directive.include file="head-boilerplate.xml" />
+		<local:header />
 
 		<script type="text/javascript" src="https://www.google.com/jsapi"><!-- stupid jsp processor --></script>
 		<script type="text/javascript">
@@ -68,42 +56,28 @@
 		</script>
  	</head>
 	<body>
-		<h1>Tim's <em>Official</em> Chess Spreadsheet</h1>
+		<local:bannerWithNav />
 		
-		<div id="top">
-				<ul id="global-nav">
-					<li><a href="${urlStandings}" class="here">Player Standings</a>
-						<ul>
-							<li><a href="?sort=player" class="${classPlayer}" >By Player</a></li>
-							<li><a href="?sort=gamesplayed" class="${classGamesPlayed}">By Games Played</a></li>
-							<li><a href="?sort=wins" class="${classWins}">By Wins</a></li>
-							<li><a href="?sort=winpercentage" class="${classWinpercentage}">By Win%</a></li>
-						</ul></li>
-					<li><a href="${urlTeams}" >Teams</a></li>
-					<li><a href="${urlGames}" >Games</a></li>
-				</ul>
-		</div>
-		<div id="pageContent" >
+		<div class="container" >
 			<div id="chart_area">
-				<div class="center">
-					<div id="chartPerformance"><!-- stupid jsp processor --></div>
-					<div id="chartStreaks"><!-- stupid jsp processor --></div>
+				<div class="row">
+					<div class="span7 offset1" id="chartPerformance"><!-- stupid jsp processor --></div>
+					<div class="span7 offset8" id="chartStreaks"><!-- stupid jsp processor --></div>
 				</div>
 			</div>
-			
-			<div id="statsTable" >
-			<table id="table" >
+			<div class="span16" >
+			<table class="zebra-striped" >
 				<thead><tr>
-					<th><h3>Player</h3></th>
-					<th><h3>Games Played</h3></th>
-					<th><h3>Wins</h3></th>
-					<th><h3>Win%</h3></th>
-					<th><h3>Losses</h3></th>
-					<th><h3>Draws</h3></th>
-					<th><h3>Longest Winning Streak</h3></th>
-					<th><h3>Longest Losing Streak</h3></th>
-					<th class="nosort"><h3>Current Streak</h3></th>
-					<th class="nosort"><h3>Last 10</h3></th>
+					<th>Player</th>
+					<th>Games<br />Played</th>
+					<th>Wins</th>
+					<th>Win%</th>
+					<th>Losses</th>
+					<th>Draws</th>
+					<th>Longest<br />Winning<br />Streak</th>
+					<th>Longest<br />Losing<br />Streak</th>
+					<th class="nosort">Current<br />Streak</th>
+					<th class="nosort">Last<br />10</th>
 				</tr></thead>
 				<tbody>
 				<c:forEach varStatus="status" var="c" items="${stats}" >
@@ -125,15 +99,17 @@
 				</tbody>
 			</table>
 	 		</div>
-	 		<div class="notes">
-	 			<h4>Notes</h4>
-		 		<ol>
-		 			<li>The <a name="draws"><em>Draws</em></a> column includes both mutually agreed draws and 'Did Not Finish' games from the spreadsheet.</li>
-		 			<li>Data was updated <fmt:formatDate value="${lastUpdate}" dateStyle="FULL" type="both" /></li>
-		 		</ol>
+	 		<div class="row">
+	 			<span class="span1 label notice">Note</span>
+	 			<div class="offset1 span12" >
+			 		<ul>
+			 			<li>The <em>Draws</em> column includes both mutually agreed draws and 'Did Not Finish' games from the spreadsheet.</li>
+			 			<li>Data was updated <fmt:formatDate value="${lastUpdate}" dateStyle="FULL" type="both" /></li>
+			 		</ul>
+		 		</div>
 	 		</div>
 	 	</div>
-		<jsp:directive.include file="foot-boilerplate.xml" />
+		<local:footer />
   	</body>
-</html>
+</dry:html>
 </jsp:root>
