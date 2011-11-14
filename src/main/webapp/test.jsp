@@ -5,6 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Insert title here</title>
+<link rel="stylesheet" href="http://www.dstresearch.com/css/bootstrap.min.css" />
 </head>
 <body onLoad="window.initPage()">
 <h1>Hello, world.</h1>

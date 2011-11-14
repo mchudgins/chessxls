@@ -1,18 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
 <jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
-    xmlns:c="http://java.sun.com/jsp/jstl/core"
-    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:fn="htp://java.sun.com/jsp/jstl/functions" version="2.0">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:dry="http://www.dstresearch.com/dstres"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fn="htp://java.sun.com/jsp/jstl/functions" version="2.1">
 	<jsp:directive.page contentType="text/html" isELIgnored="false" pageEncoding="UTF-8" />
-		<jsp:output omit-xml-declaration="true" />
-		<jsp:output doctype-root-element="HTML" 
-		doctype-system="about:legacy-compat" /> 
-<!-- $Id$ -->   
-
-<html>
+	<jsp:output omit-xml-declaration="true" />
+<dry:html>
 	<head>
 		<title>SPiNS ${pageTitle}</title>
-		<jsp:directive.include file="head-boilerplate.xml" />
+		<dry:header css="clean-v0.css" />
 	</head>
 	<body>
 		<h1>${pageTitle}</h1>
@@ -65,8 +63,8 @@
 		    Locale language: ${loc.displayLanguage}
 		  <br /><br />
 		</c:forEach>
-		<jsp:directive.include file="foot-boilerplate.xml" />
+		<local:footer />
 		
 	</body>
-</html>
+</dry:html>
 </jsp:root>

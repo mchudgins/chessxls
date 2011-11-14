@@ -6,6 +6,13 @@
 	<!-- $Id$ -->
 
 	<!-- Deployment descriptors for debugging (with Jetty).  -->
+	
+	<!-- tell the jetty container to serve up .gz files if found -->
+	<context-param>
+		<param-name>gzip</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	
 	<context-param>
 		<param-name>db.host</param-name>
 		<param-value>${db.jee.host}</param-value>

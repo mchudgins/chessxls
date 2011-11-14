@@ -1,4 +1,0 @@
-<div id="footer" >
-	<p>${app.name} v${app.version}, r${app.svnRevision}, built ${app.buildTime}</p>
-	<p>${pageContext.servletContext.serverInfo} started at ${app.initTime}</p>
-</div>

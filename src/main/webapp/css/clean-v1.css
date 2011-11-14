@@ -1,0 +1,63 @@
+@CHARSET "ISO-8859-1";
+/*
+ *      $Id$
+ *
+ *      (Some of the) Approved DST colors are:
+ *      Background :    #e6d7aa
+ *      Red:            #800000
+ *      Green:          #537838
+ *      Dark-Blue:      #282959
+ *      Blue:           #2c4e7d
+ *  Light-Purpley/Blue #5c5c9f
+ *      Tan:            #dbd0a7
+ *      Light-Tan:      #e0dfcb
+ *      Yellow:         #ffcc00
+ *      Orange:         #cc6600
+ *      Others are:  #b49e4e,
+ *     
+ *     
+ */
+
+/*
+ *		COLORS
+ */
+
+body,
+input,
+h1,
+h2 { color: #003366; }
+
+a { color: #006699; }
+
+footer { color: #6699cc; }
+
+h1,
+h2 { background-color: #6699cc; }
+
+h2 { border-top-color: #003366; }
+
+.headerRow,
+.winnerRow { background-color: #6699cc; }
+
+h1,
+h2 { padding-left: .25em; padding-right: .25em; }
+
+.winnerRow { font: bold; font-size: 150%; border: 1px solid #BFBFBF }
+.winnerRow td { padding-top: .5em; }
+
+nav ul { list-style: none; margin: 0 0 0 0; padding-bottom: .125em; }
+
+#chart_area { display: block; margin-top: 4em; width: 100%; }
+.center { margin: auto; }
+#chartPerformance { display: inline; margin-right: 2em; }
+#chartStreaks{ display: inline; margin-left: 2em; }
+
+footer { font-size: 60%; line-height: 60%; float: right; text-align: right;
+	margin-top: 10em; margin-left: auto; padding-top: 1em; }
+footer p { padding-bottom: 0; padding-top: 0; margin-bottom: 2px; }
+@media all and (max-device-width: 600px) {
+	footer {
+		display: none;
+	}
+}
+

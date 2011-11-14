@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jsp:root xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions" version="2.0" >
+<!-- TODO:  why does this need to use JSP V2.0 rather than 2.1?!?!?? wtf!! -->
+<!-- especially since when packaged inside an external jar file, it works. -->
+
+<!-- Setup URLs -->
+<c:url var="urlStandings" value="/standings" />
+<c:url var="urlTeams" value="/teams" />
+<c:url var="urlGames" value="/game" />
+
+<!-- compute top level nav class styles -->
+<c:set var="thisURI"
+	value="${ ( fn:length( thisPage ) > 0 ) ? thisPage : requestScope['javax.servlet.forward.request_uri'] }" />
+<c:set var="classStandings" value="${ ( fn:endsWith( thisURI, 'standings' ) ? 'active' : '' ) }" />
+<c:set var="classTeams" value="${ ( fn:endsWith( thisURI, 'teams' ) ? 'active' : '' ) }" />
+<c:set var="classGames" value="${ ( fn:endsWith( thisURI, 'game' ) ? 'active' : '' ) }" />
+
+<!-- compute class="here" attribute for subnav menu -->
+<c:set var="classPlayer" value="${ ( param.sort=='player' || param.sort==null ) ? 'active' : '' }" /> 
+<c:set var="classGamesPlayed" value="${param.sort=='gamesplayed' ? 'active' : '' }" />
+<c:set var="classWins" value="${param.sort=='wins' ? 'active' : '' }" />   
+<c:set var="classWinpercentage" value="${param.sort=='winpercentage' ? 'active' : '' }" />
+
+<!-- emit the content for the banner and navigation -->
+<div class="container" >
+	<div role="banner" class="banner" >
+		<h1>Tim's <em>Official</em> Chess Spreadsheet</h1>
+	</div>
+	<nav>
+		<ul class="tabs" >
+			<li class="dropdown ${classStandings}" data-dropdown="dropdown" >
+				<a href="${urlStandings}" class="dropdown-toggle" >Player Standings</a>
+				<ul class="dropdown-menu" >
+					<li><a href="${urlStandings}?sort=player" class="${classPlayer}" >By Player</a></li>
+					<li><a href="${urlStandings}?sort=gamesplayed" class="${classGamesPlayed}">By Games Played</a></li>
+					<li><a href="${urlStandings}?sort=wins" class="${classWins}">By Wins</a></li>
+					<li><a href="${urlStandings}?sort=winpercentage" class="${classWinpercentage}">By Win%</a></li>
+				</ul>
+			</li>
+			
+			<li class="${classTeams}" ><a href="${urlTeams}" >Teams</a></li>
+			<li class="dropdown ${classGames}" data-dropdown="dropdown">
+				<a href="${urlGames}" class="dropdown-toggle" >Games</a>
+				<ul class="dropdown-menu" >
+					<li><a href="${urlGames}">Game List</a></li>
+					<li><a href="${urlGames}?new" class="here">Post a Game Result</a></li>
+				</ul>
+			</li>
+		</ul>
+	</nav>
+</div>
+<jsp:doBody />
+</jsp:root>

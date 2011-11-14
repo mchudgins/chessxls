@@ -20,11 +20,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
-import com.dstresearch.beans.AppBean;
+import com.dstresearch.util.AppBean;
 import com.dstresearch.chess.db.DbReader;
 
 /**
@@ -54,7 +55,7 @@ public class MainController
 	
 	@Inject
 	private		DbReader		dbReader	= null;
-
+	
 	protected String	getContextPath( HttpServletRequest req )
 		{
 		if ( req.getContextPath().equals( "/" ) )
@@ -70,7 +71,7 @@ public class MainController
 	/**
 	 * Displays the website's welcome page.
 	 */
-	@RequestMapping( "/welcome" )
+	@RequestMapping( value = { "/welcome", "/goodbye" } )
 	public	ModelAndView	welcome( HttpServletRequest req )
 		{
 		log.info( "/welcome" );
@@ -82,7 +83,7 @@ public class MainController
 	/**
 	 * Display the Summary Stats
 	 */
-	@RequestMapping( "/" )
+	@RequestMapping( value = { "/", "/standings" } )
 	public	ModelAndView	summaryStats( HttpServletRequest req )
 		{
 		log.info( "/" );
@@ -90,13 +91,7 @@ public class MainController
 		
 		String	thisURL	= this.getContextPath( req );
 		
-		return( controller.get( this.dbReader, req, this.msgs, thisURL ) );
-		}
-	
-	@RequestMapping( "/standings" )
-	public	ModelAndView	standings( HttpServletRequest req )
-		{
-		return( this.summaryStats( req ) );
+		return( controller.get( this.dbReader, req, this.msgs, "/standings" ) );
 		}
 	
 	@RequestMapping( "/teams" )
@@ -106,21 +101,26 @@ public class MainController
 		
 		TeamHandler	controller	= new TeamHandler();
 		
-		String	thisURL	= this.getContextPath( req ) + "/teams";
-		
-		return( controller.get( this.dbReader, req, this.msgs, thisURL ) );
+		return( controller.get( this.dbReader, req, this.msgs, "/teams" ) );
 		}
 	
-	@RequestMapping( "/games" )
+	@RequestMapping( "/game" )
 	public	ModelAndView	games( HttpServletRequest req )
 		{
 		log.info( "/teams" );
 		
 		GameHandler	controller	= new GameHandler();
 		
-		String	thisURL	= this.getContextPath( req ) + "/games";
+		return( controller.get( this.dbReader, req, this.msgs, "/games" ) );
+		}
+	
+	@RequestMapping( "/game/{id}" )
+	public	ModelAndView	game( HttpServletRequest req, @PathVariable long id )
+		{
+		log.info( "/game/" + id );
+		GameHandler	controller	= new GameHandler();
 		
-		return( controller.get( this.dbReader, req, this.msgs, thisURL ) );
+		return( controller.displayGame( this.dbReader, req, this.msgs, "/game", id ) );
 		}
 	
 	@RequestMapping( "/player/{Player}" )
@@ -130,33 +130,31 @@ public class MainController
 		
 		PlayerHandler	controller	= new PlayerHandler();
 		
-		String	thisURL	= this.getContextPath( req );
-		
-		return( controller.get( this.dbReader, req, this.msgs, thisURL ) );
+		return( controller.get( this.dbReader, req, this.msgs, "/player/" + Player ) );
 		}
 	
 	/**
 	 * post your games results here
 	 */
 	
-	@RequestMapping( value="/gameResults", method=RequestMethod.GET )
+	@RequestMapping( value="/game", method=RequestMethod.GET, params="new" )
 	public	ModelAndView	getNewGame( HttpServletRequest req )
 		{
 		log.info( "/newGame:get" );
 		
 		NewGameHandler controller	= new NewGameHandler();
 		
-		return( controller.get( this.dbReader, req, this.msgs ) );
+		return( controller.get( this.dbReader, req, this.msgs, "/game" ) );
 		}
 
-	@RequestMapping( value="/gameResults", method=RequestMethod.POST )
-	public	ModelAndView	postNewGame( HttpServletRequest req )
+	@RequestMapping( value="/game", method=RequestMethod.POST )
+	public	ModelAndView	postNewGame( HttpServletRequest req ) throws Exception
 		{
 		log.info( "/newGame:post" );
 		
 		NewGameHandler controller	= new NewGameHandler();
 		
-		return( controller.post( this.dbReader, req, this.msgs ) );
+		return( controller.post( this.dbReader, req, this.msgs, "/game" ) );
 		}
 	
 	/**
@@ -169,7 +167,6 @@ public class MainController
 		log.info( "/testjig" );
 		
 		ModelAndView	mav	= new ModelAndView( "testjig" );
-		
 		return( mav );
 		}
 	

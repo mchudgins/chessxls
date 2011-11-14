@@ -1,0 +1,17 @@
+<taglib
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+            http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd"
+        xmlns="http://java.sun.com/xml/ns/javaee" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        version="2.1">
+        
+        <tlib-version>1.2</tlib-version> 
+        <short-name>ChessXlsTags</short-name>
+        <uri>http://www.dstresearch.com/chessxls</uri>
+
+		<tag-file>
+			<name>bannerWithNav</name>
+			<path>/WEB-INF/tags/bannerWithNav.tagx</path>
+		</tag-file>
+
+</taglib>

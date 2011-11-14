@@ -1,0 +1,33 @@
+<!-- $Id$ -->
+<jsp:root
+	xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:dry="http://www.dstresearch.com/dstres"
+    xmlns:local="urn:jsptagdir:/WEB-INF/tags/"
+	xmlns="http://www.w3.org/1999/xhtml"
+	version="2.1">
+	<jsp:directive.page contentType="text/html" isELIgnored="false" pageEncoding="UTF-8" />
+	<jsp:output omit-xml-declaration="true" />
+<dry:html>
+	<head>
+		<title>Chess XLS ${pageTitle}</title>
+		<dry:header css="clean-v1.css" />
+		<!-- this one little ol' bit o' css is needed in the jsp file because the background image logo url relies on the current app.imagePath -->
+		<style type="text/css"> 
+        th { background-image: url(${app.imagePath}/sort-up.png); background-repeat: no-repeat; background-position: left top; }
+		</style>
+ 	</head>
+	<body>
+		<local:bannerWithNav />
+		<div class="container" >
+			<div class="alert-message info"> 
+				<p>This page has not been implemented (yet).</p>
+			</div>
+		</div>
+		 		
+		<local:footer />
+  	</body>
+</dry:html>
+</jsp:root>

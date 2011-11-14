@@ -15,6 +15,8 @@ import javax.sql.DataSource;
 import org.apache.log4j.Logger;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import com.dstresearch.beans.Game;
 
 /**
  * @author Mike Hudgins <mchudgins@dstsystems.com>
@@ -259,5 +261,165 @@ public class DbReader
 			}
 
 		return( l );
+		}
+	
+	/**
+	 * 
+	 * @param g
+	 * @return
+	 */
+	
+	public	long	writeGameRecord( Game g )
+		{
+		assert( isInternallyValid() );
+		
+		// write the game result
+		Map< String, Object >	params	= new HashMap< String, Object >();
+		long			id	= 0;
+
+		params.put( "playdate", g.date );
+		params.put( "winner", g.result );
+		
+		try
+			{
+			SimpleJdbcInsert	insert;
+			
+			insert	= new SimpleJdbcInsert(	getJdbcTemplate() )
+					.withTableName( "games" )
+					.usingGeneratedKeyColumns( "id" )
+					.usingColumns( "playdate", "winner" );
+			if ( insert == null )
+				{
+				log.fatal( "unable to create SimpleJdbcInsert object." );
+				return( 0 );
+				}
+			
+			id	= (Long) insert.executeAndReturnKey( params );
+			
+			SimpleJdbcInsert	players;
+			players	= new SimpleJdbcInsert( getJdbcTemplate() )
+					.withTableName( "games_teams_xref" )
+					.usingColumns( "game_id", "user", "side" );
+			if ( players == null )
+				{
+				log.fatal( "unable to create SimpleJdbcInsert object for games_teams_xref" );
+				return( 0 );
+				}
+			
+			for ( String key : g.teams.keySet() )
+				{
+				Map< String, Object > map = new HashMap< String, Object >();
+				map.put( "game_id", id );
+				map.put( "user", key );
+				map.put( "side", g.teams.get( key ) );
+				players.execute( map );
+				}
+			}
+		catch ( Exception exc )
+			{
+			log.fatal( exc.getClass().getName()
+				+ " -- " + exc.getLocalizedMessage() );
+			}
+		
+		return( id );
+		}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	
+	public	List< String > getOpenings()
+		{
+		assert( isInternallyValid() );
+
+		List< String >	l = getJdbcTemplate().query( "select distinct opening from games where opening!=\"NULL\" order by opening asc",
+					new RowMapper< String >()
+					{
+					public String mapRow( ResultSet rs,
+							int RowNum ) throws SQLException
+						{
+						String	opening	= new String();
+						
+						opening	= rs.getString( "opening" );
+						return( opening );
+						}
+					} );
+		
+		return( l );
+		}
+	
+	/**
+	 * 
+	 * @param rs
+	 * @param g
+	 * @return
+	 */
+	
+	private Game	populateGameRecord( ResultSet rs, Game g )
+		{
+		try
+			{
+			if ( g == null )
+				{
+				g	= new Game();
+				}
+			g.id	= rs.getLong( "id" );
+			g.date	= rs.getDate( "playdate" );
+			g.result= rs.getString( "winner" );
+			
+			return( g );
+			}
+		catch ( Exception e )
+			{
+			log.fatal( e.getClass().getName() + " -- " + e.getLocalizedMessage() );
+			return( null );
+			}
+		}
+	
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
+	
+	public	Game	readGameRecord( long id )
+		{
+		
+		assert( isInternallyValid() );
+		
+		Game	g = this.getJdbcTemplate().queryForObject( "select id, playdate, winner, opening, pgn_file from games where id=?",
+				new Object[] { id },
+				new RowMapper< Game >()
+					{
+					public Game mapRow( ResultSet rs,
+							int RowNum ) throws SQLException
+						{
+						return( populateGameRecord( rs, new Game() ) );
+						}
+					} );
+		
+		List< Pair< String, String > > players;
+		
+		players	= (List< Pair< String, String > >) this.getJdbcTemplate()
+				.query( "select user, side from games_teams_xref where game_id = ? order by user asc",
+					new Object[] { id },
+					new RowMapper< Pair< String, String > >()
+						{
+						public Pair< String, String > mapRow( ResultSet rs,
+							int RowNum ) throws SQLException
+							{
+							String	player	= rs.getString( "user" );
+							String	side	= rs.getString( "side" );
+							return( new Pair< String, String >( player, side ) );
+							}
+						} );
+		
+		for ( Pair< String, String > p : players )
+			{
+			g.teams.put( p.key, p.value );
+			}
+		
+		return( g );
 		}
 	}
