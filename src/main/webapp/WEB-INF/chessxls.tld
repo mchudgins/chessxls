@@ -9,9 +9,17 @@
         <short-name>ChessXlsTags</short-name>
         <uri>http://www.dstresearch.com/chessxls</uri>
 
-		<tag-file>
-			<name>bannerWithNav</name>
-			<path>/WEB-INF/tags/bannerWithNav.tagx</path>
-		</tag-file>
+		<tag>
+			<name>detectMobileBrowser</name>
+			<tag-class>com.dstresearch.taglib.DetectMobileBrowser</tag-class>
+			<body-content>empty</body-content>
+			
+			<attribute>
+				<name>var</name>
+				<required>true</required>
+				<rtexprvalue>true</rtexprvalue>
+				<type>java.lang.Boolean</type>
+			</attribute>
+		</tag>
 
 </taglib>

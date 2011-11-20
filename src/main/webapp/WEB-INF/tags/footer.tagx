@@ -8,4 +8,6 @@
 			<dry:footer />
 		</div>
 	</div>
+	
+	<script type="text/javascript" src="${app.jsPath}/chessxlsBehaviors/chessxlsBehaviors.nocache.js"><!-- stupid jsp processor --></script>
 </jsp:root>

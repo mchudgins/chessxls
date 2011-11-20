@@ -6,6 +6,7 @@
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:dry="http://www.dstresearch.com/dstres"
     xmlns:local="urn:jsptagdir:/WEB-INF/tags/"
+    xmlns:xls="http://www.dstresearch.com/chessxls"
 	xmlns="http://www.w3.org/1999/xhtml"
 	version="2.1">
 	<jsp:directive.page contentType="text/html" isELIgnored="false" pageEncoding="UTF-8" />
@@ -14,57 +15,67 @@
 		
 	<head>
 		<local:header />
+		<xls:detectMobileBrowser var="isMobileBrowser" />
 
-		<script type="text/javascript" src="https://www.google.com/jsapi"><!-- stupid jsp processor --></script>
-		<script type="text/javascript">
-			google.load("visualization", "1", {packages:["corechart"]});
-			google.setOnLoadCallback(drawChart);
-			function drawChart()
-				{
-				var dataP = new google.visualization.DataTable();
-				dataP.addColumn('string', 'Player');
-				dataP.addColumn('number', 'Games Played');
-				dataP.addColumn('number', 'Wins');
-				dataP.addColumn('number', 'Draws');
-				dataP.addRows(${fn:length(stats)});
-				<c:forEach varStatus="status" var="c" items="${stats}" >
-					dataP.setValue( ${status.index}, 0, '${c.player}');
-					dataP.setValue( ${status.index}, 1, ${c.games});
-					dataP.setValue( ${status.index}, 2, ${c.wins});
-					dataP.setValue( ${status.index}, 3, ${c.draws});
-				</c:forEach>
-				
-				var chartP = new google.visualization.BarChart(document.getElementById('chartPerformance'));
-				chartP.draw(dataP, {width: 400, height: 300, title: 'Player Performance',
-					vAxis: {title: 'Player', titleTextStyle: {color: 'red'}}});
-				
-				var dataS = new google.visualization.DataTable();
-				dataS.addColumn('string', 'Player');
-				dataS.addColumn('number', 'Wins');
-				dataS.addColumn('number', 'Losses');
-				dataS.addRows(${fn:length(stats)});
-				<c:forEach varStatus="status" var="c" items="${stats}" >
-					dataS.setValue( ${status.index}, 0, '${c.player}');
-					dataS.setValue( ${status.index}, 1, ${c.longestWinStreak});
-					dataS.setValue( ${status.index}, 2, ${c.longestLossStreak});
-				</c:forEach>
-				
-				var chartS = new google.visualization.BarChart(document.getElementById('chartStreaks'));
-				chartS.draw(dataS, {width: 400, height: 300, title: 'Player Streakiness',
-					vAxis: {title: 'Player', titleTextStyle: {color: 'red'}}});
-				}
-		</script>
+		<c:choose>
+			<c:when test="${ ! isMobileBrowser }" >
+				<script type="text/javascript" src="https://www.google.com/jsapi"><!-- stupid jsp processor --></script>
+				<script type="text/javascript">
+					google.load("visualization", "1", {packages:["corechart"]});
+					google.setOnLoadCallback(drawChart);
+					function drawChart()
+						{
+						var dataP = new google.visualization.DataTable();
+						dataP.addColumn('string', 'Player');
+						dataP.addColumn('number', 'Games Played');
+						dataP.addColumn('number', 'Wins');
+						dataP.addColumn('number', 'Draws');
+						dataP.addRows(${fn:length(stats)});
+						<c:forEach varStatus="status" var="c" items="${stats}" >
+							dataP.setValue( ${status.index}, 0, '${c.player}');
+							dataP.setValue( ${status.index}, 1, ${c.games});
+							dataP.setValue( ${status.index}, 2, ${c.wins});
+							dataP.setValue( ${status.index}, 3, ${c.draws});
+						</c:forEach>
+						
+						var chartP = new google.visualization.BarChart(document.getElementById('chartPerformance'));
+						chartP.draw(dataP, {width: 400, height: 300, title: 'Player Performance',
+							vAxis: {title: 'Player', titleTextStyle: {color: 'red'}}});
+						
+						var dataS = new google.visualization.DataTable();
+						dataS.addColumn('string', 'Player');
+						dataS.addColumn('number', 'Wins');
+						dataS.addColumn('number', 'Losses');
+						dataS.addRows(${fn:length(stats)});
+						<c:forEach varStatus="status" var="c" items="${stats}" >
+							dataS.setValue( ${status.index}, 0, '${c.player}');
+							dataS.setValue( ${status.index}, 1, ${c.longestWinStreak});
+							dataS.setValue( ${status.index}, 2, ${c.longestLossStreak});
+						</c:forEach>
+						
+						var chartS = new google.visualization.BarChart(document.getElementById('chartStreaks'));
+						chartS.draw(dataS, {width: 400, height: 300, title: 'Player Streakiness',
+							vAxis: {title: 'Player', titleTextStyle: {color: 'red'}}});
+						}
+				</script>
+			</c:when>
+		</c:choose>
  	</head>
 	<body>
 		<local:bannerWithNav />
 		
 		<div class="container" >
-			<div id="chart_area">
-				<div class="row">
-					<div class="span7 offset1" id="chartPerformance"><!-- stupid jsp processor --></div>
-					<div class="span7 offset8" id="chartStreaks"><!-- stupid jsp processor --></div>
+
+		<c:choose>
+			<c:when test="${ ! isMobileBrowser }" >
+				<div id="chart_area">
+					<div class="row">
+						<div class="span7 offset1" id="chartPerformance"><!-- stupid jsp processor --></div>
+						<div class="span7 offset8" id="chartStreaks"><!-- stupid jsp processor --></div>
+					</div>
 				</div>
-			</div>
+			</c:when>
+		</c:choose>
 			<div class="span16" >
 			<table class="zebra-striped" >
 				<thead><tr>

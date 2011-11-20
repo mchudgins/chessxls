@@ -1,10 +1,11 @@
-<module rename-to="TestJig" >
+<module rename-to="chessxlsBehaviors" >
 	<inherits name="com.google.gwt.user.User"/>
 	<inherits name="com.google.gwt.i18n.I18N"/>
 	<inherits name="com.google.gwt.resources.Resources" />
-
-	<entry-point class="com.dstresearch.gwt.behaviours.TestJig" />
-		
+	<inherits name='com.google.gwt.query.Query'/>
+	
+	<entry-point class="com.dstresearch.gwt.behaviors.ChessXlsBehaviors" />
+	        
 	<!-- Specify the paths for translatable code                    -->
-	<source path="behaviours" />
+	<source path="behaviors" />
 </module>

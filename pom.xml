@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dstresearch</groupId>
 	<artifactId>chessxls</artifactId>
-	<version>0.2.0</version>
+	<version>0.3.0</version>
 	<packaging>war</packaging>
 	<name>Chess Spreadsheet on the Web</name>
 
@@ -43,6 +43,7 @@
 		<svn.repo>pub/chessxls</svn.repo>
 
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+		<jettyResourcesDirectory>${basedir}/src/main/webapp</jettyResourcesDirectory>
 	</properties>
 
 	<distributionManagement>
@@ -200,6 +201,8 @@
 			
 			<!-- Jetty: run the webapp in Jetty for testing/debugging purposes -->
 			<!-- mvn -Djetty.port=xxxx jetty:run -->
+			<!-- If you're debugging gwt stuff then
+				add -DjettyResourcesDirectory=target/chessxls-<version> -->
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
@@ -236,7 +239,7 @@
 						<!-- http://stackoverflow.com/questions/2538823/using-maven-and-embedded-jetty-classcastexception -->
 						<parentLoaderPriority>true</parentLoaderPriority>
 					</webAppConfig>
-					<!-- <webAppSourceDirectory>${webappDirectory}</webAppSourceDirectory> -->
+					<webAppSourceDirectory>${jettyResourcesDirectory}</webAppSourceDirectory>
 					<loginServices>
 						<loginService implementation="org.eclipse.jetty.security.HashLoginService">
 							<name>ChessXLS</name>
@@ -281,6 +284,8 @@
 			<!-- Helpful debugging hint: "mvn gwt:run" -->
 			<!-- For debugging with the full jetty container: start jetty with mvn 
 				package jetty:run, then start gwt with mvn package gwt:run -Dgwt.noserver=true -->
+			<!-- (in this project, the extra -DrunTarget=com.dstresarch.gwt.behaviors.ChessXlsBehaviors/ChessXlsBehaviors.html
+				is also required.) -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
@@ -299,7 +304,9 @@
 				<!-- Plugin configuration. There are many available options, see gwt-maven-plugin 
 					documentation at codehaus.org -->
 				<configuration>
+					<webappDirectory>${webappDirectory}/js</webappDirectory>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
+					<deploy>${webappDirectory}/WEB-INF</deploy>
 					<!-- <i18nMessagesBundles> <i18nMessagesBundle>com.dstresearch.gwtSample.client.Messages</i18nMessagesBundle> 
 						</i18nMessagesBundles> -->
 					<noserver>true</noserver>
@@ -309,6 +316,7 @@
 			</plugin>
 
 			<!-- GZip the static resources (list after GWT) -->
+<!-- 			
 			<plugin>
 				<groupId>org.yuksnort.maven.plugins</groupId>
 				<artifactId>gzip-maven-plugin</artifactId>
@@ -328,7 +336,7 @@
 					</fileExtensions>
 				</configuration>
 			</plugin>
-
+ -->
 		<!-- wro4j minimizes/massages the css/js files to speed browsers up -->
 			<plugin>
 				<groupId>ro.isdc.wro4j</groupId>
@@ -392,15 +400,25 @@
 			<version>1.2</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
+		</dependency>
+
+		<!-- JSP Tag api's -->
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>javax.servlet.jsp-api</artifactId>
+			<version>2.2.1</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -444,11 +462,19 @@
 			<version>${mysql.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.dstresearch</groupId>
 			<artifactId>servlet-helper</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+
+		<!-- GQuery is JQuery for GWT -->
+		<dependency>
+			<groupId>com.googlecode.gwtquery</groupId>
+			<artifactId>gwtquery</artifactId>
+			<version>1.1.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
