@@ -316,7 +316,6 @@
 			</plugin>
 
 			<!-- GZip the static resources (list after GWT) -->
-<!-- 			
 			<plugin>
 				<groupId>org.yuksnort.maven.plugins</groupId>
 				<artifactId>gzip-maven-plugin</artifactId>
@@ -336,7 +335,7 @@
 					</fileExtensions>
 				</configuration>
 			</plugin>
- -->
+
 		<!-- wro4j minimizes/massages the css/js files to speed browsers up -->
 			<plugin>
 				<groupId>ro.isdc.wro4j</groupId>
