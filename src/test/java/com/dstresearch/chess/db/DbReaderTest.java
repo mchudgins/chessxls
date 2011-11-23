@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import com.dstresearch.beans.Game;
 
 /**
  * @author Mike Hudgins <mchudgins@dstsystems.com>
@@ -90,4 +91,31 @@ public class DbReaderTest
 		for ( String o : openings )
 			log.info( o );
 		}
+	
+	@Test
+	public	void	readSomeGames()
+		{
+		List< Game > games;
+		
+		games	= this.reader.getAllGames( 10 );
+		assertTrue( "games not found", games.size() > 0 );
+		for ( int i = 0, n = games.size(); i < n; i++ )
+			{
+			log.info( games.get( i ) );
+			}
+		}
+
+	@Test
+	public	void	readMoreGames()
+		{
+		List< Game > games;
+		
+		games	= this.reader.getMoreGames( 5, 5 );
+		assertTrue( "games not found", games.size() > 0 );
+		for ( int i = 0, n = games.size(); i < n; i++ )
+			{
+			log.info( games.get( i ) );
+			}
+		}
+
 	}

@@ -47,4 +47,26 @@ public class Game
 		{
 		return( this.teams );
 		}
+	
+	public	String	toString()
+		{
+		StringBuffer	buf	= new StringBuffer( 256 );
+		
+		buf.append( "Id: " );
+		buf.append( this.id );
+		buf.append( ", Date:  " );
+		buf.append( this.date );
+		buf.append( ", Winner:  " );
+		buf.append( this.result );
+		buf.append( ", Players:  " );
+		for ( String key : this.teams.keySet() )
+			{
+			buf.append( key );
+			buf.append( "(" );
+			buf.append( this.teams.get( key ) );
+			buf.append( "), " );
+			}
+		
+		return( buf.toString() );
+		}
 	}
