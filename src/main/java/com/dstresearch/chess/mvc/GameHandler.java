@@ -12,7 +12,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.web.servlet.ModelAndView;
 import com.dstresearch.beans.Game;
 import com.dstresearch.chess.db.DbReader;
-import com.dstresearch.chess.mvc.SummaryHandler.SortByPlayerName;
+
 
 /**
  * @author Mike Hudgins <mchudgins@dstsystems.com>
@@ -94,6 +94,46 @@ public class GameHandler
 			{
 			
 			}
+
+		List< Game >	games	= null;
+		String	page		= req.getParameter( "page" );
+		String	itemsPerPage	= req.getParameter( "items" );
+		int	pageNum;
+		int	itemsNum;
+		
+		try
+			{
+			if ( page != null )
+				pageNum		= Integer.parseInt( page );
+			else
+				{
+				page		= "1";
+				pageNum		= 1;
+				}
+			}
+		catch ( NumberFormatException excNum )
+			{
+			pageNum		= 1;
+			}
+		try
+			{
+			if ( itemsPerPage != null )
+				itemsNum	= Integer.parseInt( itemsPerPage );
+			else
+				{
+				itemsPerPage	= "10";
+				itemsNum	= 10;
+				}
+			}
+		catch ( NumberFormatException excNum )
+			{
+			itemsNum	= 10;
+			}
+		
+		if ( pageNum < 2 )
+			games	= reader.getAllGames( 10 );
+		else
+			games	= reader.getMoreGames( ( pageNum - 1 ) * itemsNum, itemsNum );
 			
 		mav.addObject( "sortOrder", ( sortOrder == null ) ? "" : sortOrder.toLowerCase() );
 		
@@ -109,7 +149,11 @@ public class GameHandler
 		mav.addObject( "pageTitle", "" );
 		mav.addObject( "message", msgs.getMessage( "message", new Object[] { "hello, world" }, req.getLocale() ) );
 		mav.addObject( "userLocale", req.getLocale().toString() );
-	
+		mav.addObject( "games", games );
+		mav.addObject( "page", pageNum );
+		mav.addObject( "itemsPerPage", itemsNum );
+		mav.addObject( "totalItems", reader.getTotalGameCount() );
+		
 		mav.addObject( "requestURI", req.getRequestURI() );
 		mav.addObject( "requestURL", req.getRequestURL() );
 	

@@ -403,6 +403,13 @@ public class DbReader
 		return( game );
 		}
 	
+	public	int	getTotalGameCount()
+		{
+		assert( isInternallyValid() );
+		
+		return( this.getJdbcTemplate().queryForInt( "select count( id ) from games" ) );
+		}
+	
 	/**
 	 * 
 	 * @param id
@@ -433,7 +440,7 @@ public class DbReader
 		List< Game >	games;
 		
 		games = this.getJdbcTemplate()
-				.query( "select id, playdate, winner, opening, pgn_file from games order by playdate asc limit ?",
+				.query( "select id, playdate, winner, opening, pgn_file from games order by playdate desc, id desc limit ?",
 				new Object[] { limit },
 				new RowMapper< Game >()
 					{
@@ -455,7 +462,7 @@ public class DbReader
 		List< Game >	games;
 		
 		games = this.getJdbcTemplate()
-		.query( "select id, playdate, winner, opening, pgn_file from games order by playdate asc limit ?, ?",
+		.query( "select id, playdate, winner, opening, pgn_file from games order by playdate desc, id desc limit ?, ?",
 		new Object[] { limit, continuation },
 		new RowMapper< Game >()
 			{
