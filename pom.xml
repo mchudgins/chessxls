@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dstresearch</groupId>
 	<artifactId>chessxls</artifactId>
-	<version>0.4.0-SNAPSHOT</version>
+	<version>0.4.0</version>
 	<packaging>war</packaging>
 	<name>Chess Spreadsheet on the Web</name>
 
@@ -513,7 +513,7 @@
 		<dependency>
 			<groupId>com.dstresearch</groupId>
 			<artifactId>servlet-helper</artifactId>
-			<version>0.0.2</version>
+			<version>0.1.0</version>
 		</dependency>
 
 		<!-- GQuery is JQuery for GWT -->

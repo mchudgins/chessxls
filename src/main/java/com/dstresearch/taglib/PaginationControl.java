@@ -15,6 +15,7 @@ import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 import org.apache.log4j.Logger;
+import com.dstresearch.chess.mvc.PaginatorHelper;
 
 /**
  * @author Mike Hudgins <mchudgins@dstsystems.com>
@@ -35,10 +36,17 @@ public class PaginationControl extends TagSupport implements Serializable
 			throws IOException
 		{
 		out.print( url );
-		out.print( "?page=" );
+		out.print( "?" );
+		out.print( PaginatorHelper.PAGE_PARAM );
+		out.print( "=" );
 		out.print( page );
-		out.print( "&items=" );
-		out.print( this.items );
+		if ( this.items != PaginatorHelper.DEFAULT_ITEMS )
+			{
+			out.print( "&" );
+			out.print( PaginatorHelper.ITEMS_PARAM );
+			out.print( "=" );
+			out.print( this.items );
+			}
 		}
 	
 	protected void printListItem( JspWriter out, int page,
@@ -67,11 +75,12 @@ public class PaginationControl extends TagSupport implements Serializable
 	 */
 	public int doStartTag() throws JspException
 		{
+		if ( this.items == 0 )
+			this.items	= PaginatorHelper.DEFAULT_ITEMS;
 		
 		int	lastPage	= total / items;
-		if ( total % items > 0 )
+		if ( this.total % this.items > 0 )
 			lastPage++;
-		log.info( "last page:  " + lastPage );
 		
 		try
 			{
