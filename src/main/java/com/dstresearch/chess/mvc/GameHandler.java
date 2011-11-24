@@ -89,74 +89,33 @@ public class GameHandler
 		ModelAndView	mav	= new ModelAndView( "games" );
 
 		// how do they want the data sorted?
-		String	sortOrder;
+		String	sortOrder	= null;
 		if ( ( sortOrder = req.getParameter( "sort" ) ) != null )
 			{
 			
 			}
 
 		List< Game >	games	= null;
-		String	page		= req.getParameter( "page" );
-		String	itemsPerPage	= req.getParameter( "items" );
-		int	pageNum;
-		int	itemsNum;
-		
-		try
-			{
-			if ( page != null )
-				pageNum		= Integer.parseInt( page );
-			else
-				{
-				page		= "1";
-				pageNum		= 1;
-				}
-			}
-		catch ( NumberFormatException excNum )
-			{
-			pageNum		= 1;
-			}
-		try
-			{
-			if ( itemsPerPage != null )
-				itemsNum	= Integer.parseInt( itemsPerPage );
-			else
-				{
-				itemsPerPage	= "10";
-				itemsNum	= 10;
-				}
-			}
-		catch ( NumberFormatException excNum )
-			{
-			itemsNum	= 10;
-			}
+		PaginatorHelper	pager	= new PaginatorHelper( req );
+		int		pageNum	= pager.getPageNum();
+		int		itemsNum = pager.getItemsPerPage();
 		
 		if ( pageNum < 2 )
-			games	= reader.getAllGames( 10 );
+			games	= reader.getAllGames( itemsNum );
 		else
 			games	= reader.getMoreGames( ( pageNum - 1 ) * itemsNum, itemsNum );
 			
 		mav.addObject( "sortOrder", ( sortOrder == null ) ? "" : sortOrder.toLowerCase() );
 		
-		// various ways to view this page (for next time)
-		mav.addObject( "viewByPlayer", thisPage + "?sort=Player" );
-		mav.addObject( "viewByGames", thisPage + "?sort=GamesPlayed" );
-		mav.addObject( "viewByWins", thisPage + "?sort=Wins" );
-		mav.addObject( "viewByWinningPercentage", thisPage + "?sort=WinPercentage" );
-		
 		// last time the data was updated/computed
 //		mav.addObject( "lastUpdate", engine.getLastUpdate() );
 		
 		mav.addObject( "pageTitle", "" );
-		mav.addObject( "message", msgs.getMessage( "message", new Object[] { "hello, world" }, req.getLocale() ) );
-		mav.addObject( "userLocale", req.getLocale().toString() );
 		mav.addObject( "games", games );
 		mav.addObject( "page", pageNum );
 		mav.addObject( "itemsPerPage", itemsNum );
 		mav.addObject( "totalItems", reader.getTotalGameCount() );
 		
-		mav.addObject( "requestURI", req.getRequestURI() );
-		mav.addObject( "requestURL", req.getRequestURL() );
-	
 		return( mav );
 		}
 	}

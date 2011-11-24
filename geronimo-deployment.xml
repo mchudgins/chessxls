@@ -12,7 +12,7 @@
                 <sys:moduleId>
                         <sys:groupId>com.dstresearch</sys:groupId>
                         <sys:artifactId>chessxls</sys:artifactId>
-                        <sys:version>0.3.0</sys:version>
+                        <sys:version>0.4.0</sys:version>
                 </sys:moduleId>
                 <sys:dependencies>
                         <sys:dependency>
