@@ -110,15 +110,6 @@
 				</tbody>
 			</table>
 	 		</div>
-	 		<div class="row">
-	 			<span class="span1 label notice">Note</span>
-	 			<div class="offset1 span12" >
-			 		<ul>
-			 			<li>The <em>Draws</em> column includes both mutually agreed draws and 'Did Not Finish' games from the spreadsheet.</li>
-			 			<li>Data was updated <fmt:formatDate value="${lastUpdate}" dateStyle="FULL" type="both" /></li>
-			 		</ul>
-		 		</div>
-	 		</div>
 	 	</div>
 		<local:footer />
   	</body>

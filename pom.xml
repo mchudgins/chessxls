@@ -90,6 +90,69 @@
 			<url>http://www.dstresearch.com/archiva/repository/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+	
+	<profiles>
+		<!-- Build the war for release -->
+		<profile>
+			<id>prod</id>
+			<build>
+				<plugins>
+					<!-- GZip the static resources (list after GWT) -->
+					<plugin>
+						<groupId>org.yuksnort.mojo</groupId>
+						<artifactId>gzip-maven-plugin</artifactId>
+						<version>0.1.0</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>gzip</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<fileExtensions>
+								<fileExtension>html</fileExtension>
+								<fileExtension>css</fileExtension>
+								<fileExtension>js</fileExtension>
+							</fileExtensions>
+						</configuration>
+					</plugin>
+
+				<!-- wro4j minimizes/massages the css/js files to speed browsers up -->
+					<plugin>
+						<groupId>ro.isdc.wro4j</groupId>
+						<artifactId>wro4j-maven-plugin</artifactId>
+						<version>${wro4j.version}</version>
+						<executions>
+							<execution>
+								<phase>compile</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<targetGroups>all,g1</targetGroups>
+							<wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory
+							</wroManagerFactory>
+							<options>IDs</options>
+							<ignoreMissingResources>false</ignoreMissingResources>
+							<destinationFolder>${basedir}/src/main/webapp/wro/
+							</destinationFolder>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>ro.isdc.wro4j</groupId>
+								<artifactId>wro4j-extensions</artifactId>
+								<version>${wro4j.version}</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<build>
 		<resources>
@@ -348,63 +411,6 @@
 					<!-- <compileReport>true</compileReport> -->
 					<extraJvmArgs>-Xmx1024M -Xss4096k </extraJvmArgs>
 				</configuration>
-			</plugin>
-
-			<!-- GZip the static resources (list after GWT) -->
-			<!-- TODO: 'only' run this in production build mode -->
-			<!-- because the .gz files 'hide' their non-compressed -->
-			<!-- versions so you get 304's even when you've changed -->
-			<!-- the css,js, etc files. -->
-<!-- 			
-			<plugin>
-				<groupId>org.yuksnort.mojo</groupId>
-				<artifactId>gzip-maven-plugin</artifactId>
-				<version>0.1.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>gzip</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<fileExtensions>
-						<fileExtension>html</fileExtension>
-						<fileExtension>css</fileExtension>
-						<fileExtension>js</fileExtension>
-					</fileExtensions>
-				</configuration>
-			</plugin>
- -->
-		<!-- wro4j minimizes/massages the css/js files to speed browsers up -->
-			<plugin>
-				<groupId>ro.isdc.wro4j</groupId>
-				<artifactId>wro4j-maven-plugin</artifactId>
-				<version>${wro4j.version}</version>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<targetGroups>all,g1</targetGroups>
-					<wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory
-					</wroManagerFactory>
-					<options>IDs</options>
-					<ignoreMissingResources>false</ignoreMissingResources>
-					<destinationFolder>${basedir}/src/main/webapp/wro/
-					</destinationFolder>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>ro.isdc.wro4j</groupId>
-						<artifactId>wro4j-extensions</artifactId>
-						<version>${wro4j.version}</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 
 		</plugins>
