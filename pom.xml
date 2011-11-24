@@ -66,8 +66,7 @@
 
 		<svn.repo>pub/chessxls</svn.repo>
 
-		<webappDirectory>${project.build.directory}/${project.build.finalName}
-		</webappDirectory>
+		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
 		
 		<jetty.version>7.5.4.v20111024</jetty.version>
 	</properties>
@@ -352,6 +351,11 @@
 			</plugin>
 
 			<!-- GZip the static resources (list after GWT) -->
+			<!-- TODO: 'only' run this in production build mode -->
+			<!-- because the .gz files 'hide' their non-compressed -->
+			<!-- versions so you get 304's even when you've changed -->
+			<!-- the css,js, etc files. -->
+<!-- 			
 			<plugin>
 				<groupId>org.yuksnort.mojo</groupId>
 				<artifactId>gzip-maven-plugin</artifactId>
@@ -371,7 +375,7 @@
 					</fileExtensions>
 				</configuration>
 			</plugin>
-
+ -->
 		<!-- wro4j minimizes/massages the css/js files to speed browsers up -->
 			<plugin>
 				<groupId>ro.isdc.wro4j</groupId>

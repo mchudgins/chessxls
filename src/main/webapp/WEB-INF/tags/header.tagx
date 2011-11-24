@@ -4,8 +4,9 @@
 	xmlns:dry="http://www.dstresearch.com/dstres"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions" version="2.0" >
 
-	<dry:header css="clean-v1.css" />
+	<dry:header/>
 	<link href="${app.cssPath}/bootstrap.min.css" rel="stylesheet" ><!-- !@#$%! --></link> 
+	<link href="${app.cssPath}/clean-v1.css" rel="stylesheet" ><!-- @#$! --></link>
 	
 	<title>Chess XLS ${pageTitle}</title>
 	<!-- this one little ol' bit o' css is needed in the jsp file because the background image logo url relies on the current app.imagePath -->
