@@ -6,6 +6,7 @@
     xmlns:fn="http://java.sun.com/jsp/jstl/functions"
     xmlns:dry="http://www.dstresearch.com/dstres"
     xmlns:local="urn:jsptagdir:/WEB-INF/tags/"
+    xmlns:xls="http://www.dstresearch.com/chessxls"
     xmlns="http://www.w3.org/1999/xhtml"
     version="2.1">
 	<jsp:directive.page contentType="text/html" isELIgnored="false" pageEncoding="UTF-8" />
@@ -15,19 +16,60 @@
 	<head>
 		<title>Chess XLS ${pageTitle}</title>
 		<local:header />
-		<!-- this one little ol' bit o' css is needed in the jsp file because the background image logo url relies on the current app.imagePath -->
-		<style type="text/css"> 
-        th { background-image: url(${app.imagePath}/sort-up.png); background-repeat: no-repeat; background-position: left top; }
-		</style>
  	</head>
 	<body>
 		<local:bannerWithNav />
 		
 		<div class="container" >
-			<div class="alert-message info"> 
-				<p>This page has not been implemented (yet).</p>
+		
+			<div class="span16" >
+				<table class="zebra-striped" >
+					<thead><tr>
+						<th>Date</th>
+						<th>Result</th>
+						<th>White</th>
+						<th>Black</th>
+					</tr></thead>
+					<tbody>
+					<c:forEach varStatus="status" var="g" items="${games}" >
+						<c:url var="gameUrl" value="/game/${g.id}" />
+						<fmt:formatDate var="playDate" value="${g.date}" pattern="yyyy-MM-dd" />
+						<fmt:formatDate var="dow" value="${g.date}" pattern="(E)" />
+						<xls:playerList white="whiteTeam" black="blackTeam" sep="&lt;br /&gt;" players="${g.players}" />
+						<tr class="${status.index % 2 == 0 ? 'evenRow' : 'oddRow'}" >
+							<td><a href="${gameUrl}">${playDate}<br />${dow}</a></td>
+							<td>${g.winner}</td>
+							<c:choose>
+								<c:when test="${ g.winner == 'W' }" >
+									<td class="winner">${whiteTeam}</td>
+								</c:when>
+								<c:otherwise>
+									<td>${whiteTeam}</td>
+								</c:otherwise>
+							</c:choose>
+							<c:choose>
+								<c:when test="${ g.winner == 'B' }" >
+									<td class="winner" >${blackTeam}</td>
+								</c:when>
+								<c:otherwise>
+									<td>${blackTeam}</td>
+								</c:otherwise>
+							</c:choose>
+						</tr>
+					</c:forEach>
+					</tbody>
+				</table>
+		 	</div>
+
+			<div class="row">
+				<div class="offset4 span12" >
+					<c:url var="thisURL" value="/game" />
+					<xls:paginationControl page="${page}" items="${itemsPerPage}" totalItems="${totalItems}" url="${thisURL}" />
+				</div>
 			</div>
+
 		</div>
+		
 				 		
 		<local:footer />
   	</body>

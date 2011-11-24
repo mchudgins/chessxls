@@ -2,7 +2,6 @@
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
 
 <Configure class="org.eclipse.jetty.webapp.WebAppContext">
-	<Set name="contextPath">/chessxls</Set>
 	<New id="datasource" class="org.eclipse.jetty.plus.jndi.Resource">
 		<Arg></Arg>
 		<Arg>jdbc/chessxls</Arg>
@@ -17,7 +16,16 @@
 				<Set name="Password">${db.jee.password}</Set>
 			</New>
 		</Arg>
+
 	</New>
+        <!-- Configure the jndi:/comp/env/appConfigLocation value               -->
+        <!-- (which value defines deployment time property settings.)   -->
+        <New class="org.eclipse.jetty.plus.jndi.EnvEntry" >
+                <Arg></Arg>
+                <Arg>appConfigLocation</Arg>
+                <Arg type="java.lang.String">/usr/local/etc/chessxls-${user.name}.properties</Arg>
+                <Arg type="boolean" >true</Arg>
+        </New>
 </Configure>
 
 

@@ -107,11 +107,11 @@ public class MainController
 	@RequestMapping( "/game" )
 	public	ModelAndView	games( HttpServletRequest req )
 		{
-		log.info( "/teams" );
+		log.info( "/game" );
 		
 		GameHandler	controller	= new GameHandler();
 		
-		return( controller.get( this.dbReader, req, this.msgs, "/games" ) );
+		return( controller.get( this.dbReader, req, this.msgs, "/game" ) );
 		}
 	
 	@RequestMapping( "/game/{id}" )

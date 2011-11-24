@@ -52,9 +52,11 @@ nav ul { list-style: none; margin: 0 0 0 0; padding-bottom: .125em; }
 #chartPerformance { display: inline; margin-right: 2em; }
 #chartStreaks{ display: inline; margin-left: 2em; }
 
-footer { font-size: 60%; line-height: 60%; float: right; text-align: right;
-	margin-top: 10em; margin-left: auto; padding-top: 1em; }
-footer p { padding-bottom: 0; padding-top: 0; margin-bottom: 2px; }
+.winner { font-weight: bold; font-size: 100%; }
+
+footer p { font-size: 80%; line-height: 80%; text-align: right;
+	margin-left: auto; }
+footer { margin-top: 10em; }
 @media all and (max-device-width: 600px) {
 	footer {
 		display: none;

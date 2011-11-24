@@ -377,6 +377,39 @@ public class DbReader
 			}
 		}
 	
+	protected Game readPlayers( Game game )
+		{
+		List< Pair< String, String > > players;
+		
+		players	= (List< Pair< String, String > >) this.getJdbcTemplate()
+				.query( "select user, side from games_teams_xref where game_id = ? order by user asc",
+					new Object[] { game.getId() },
+					new RowMapper< Pair< String, String > >()
+						{
+						public Pair< String, String > mapRow( ResultSet rs,
+							int RowNum ) throws SQLException
+							{
+							String	player	= rs.getString( "user" );
+							String	side	= rs.getString( "side" );
+							return( new Pair< String, String >( player, side ) );
+							}
+						} );
+		
+		for ( Pair< String, String > p : players )
+			{
+			game.teams.put( p.key, p.value );
+			}
+
+		return( game );
+		}
+	
+	public	int	getTotalGameCount()
+		{
+		assert( isInternallyValid() );
+		
+		return( this.getJdbcTemplate().queryForInt( "select count( id ) from games" ) );
+		}
+	
 	/**
 	 * 
 	 * @param id
@@ -399,27 +432,50 @@ public class DbReader
 						}
 					} );
 		
-		List< Pair< String, String > > players;
+		return( readPlayers( g ) );
+		}
+	
+	public List< Game > getAllGames( int limit )
+		{
+		List< Game >	games;
 		
-		players	= (List< Pair< String, String > >) this.getJdbcTemplate()
-				.query( "select user, side from games_teams_xref where game_id = ? order by user asc",
-					new Object[] { id },
-					new RowMapper< Pair< String, String > >()
-						{
-						public Pair< String, String > mapRow( ResultSet rs,
+		games = this.getJdbcTemplate()
+				.query( "select id, playdate, winner, opening, pgn_file from games order by playdate desc, id desc limit ?",
+				new Object[] { limit },
+				new RowMapper< Game >()
+					{
+					public Game mapRow( ResultSet rs,
 							int RowNum ) throws SQLException
-							{
-							String	player	= rs.getString( "user" );
-							String	side	= rs.getString( "side" );
-							return( new Pair< String, String >( player, side ) );
-							}
-						} );
+						{
+						return( populateGameRecord( rs, new Game() ) );
+						}
+					} );
 		
-		for ( Pair< String, String > p : players )
+		for ( Game g : games )
+			readPlayers( g );
+		
+		return( games );
+		}
+	
+	public List< Game > getMoreGames( int limit, int continuation )
+		{
+		List< Game >	games;
+		
+		games = this.getJdbcTemplate()
+		.query( "select id, playdate, winner, opening, pgn_file from games order by playdate desc, id desc limit ?, ?",
+		new Object[] { limit, continuation },
+		new RowMapper< Game >()
 			{
-			g.teams.put( p.key, p.value );
-			}
-		
-		return( g );
+			public Game mapRow( ResultSet rs,
+					int RowNum ) throws SQLException
+				{
+				return( populateGameRecord( rs, new Game() ) );
+				}
+			} );
+
+		for ( Game g : games )
+			readPlayers( g );
+
+		return( games );
 		}
 	}

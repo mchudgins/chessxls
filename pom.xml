@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dstresearch</groupId>
 	<artifactId>chessxls</artifactId>
-	<version>0.2.0</version>
+	<version>0.4.0</version>
 	<packaging>war</packaging>
 	<name>Chess Spreadsheet on the Web</name>
 
@@ -18,6 +18,30 @@
 		<developerConnection>scm:svn:https://www.dstresearch.com/svn/${svn.repo}</developerConnection>
 		<url>http://www.dstresearch.com/svn</url>
 	</scm>
+
+	<!-- some jar's are at dstresearch.com -->
+	<repositories>
+		<repository>
+			<id>releases</id>
+			<name>Release Repository</name>
+			<url>http://repo.dstresearch.com/releases</url>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>plugin-releases</id>
+			<name>Release Repository for Plugins</name>
+			<url>http://repo.dstresearch.com/releases</url>
+			<layout>default</layout>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>60</updatePolicy>
+			</snapshots>
+			<releases>
+				<updatePolicy>daily</updatePolicy>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,6 +67,8 @@
 		<svn.repo>pub/chessxls</svn.repo>
 
 		<webappDirectory>${project.build.directory}/${project.build.finalName}</webappDirectory>
+		
+		<jetty.version>7.5.4.v20111024</jetty.version>
 	</properties>
 
 	<distributionManagement>
@@ -64,6 +90,69 @@
 			<url>http://www.dstresearch.com/archiva/repository/snapshots</url>
 		</snapshotRepository>
 	</distributionManagement>
+	
+	<profiles>
+		<!-- Build the war for release -->
+		<profile>
+			<id>prod</id>
+			<build>
+				<plugins>
+					<!-- GZip the static resources (list after GWT) -->
+					<plugin>
+						<groupId>org.yuksnort.mojo</groupId>
+						<artifactId>gzip-maven-plugin</artifactId>
+						<version>0.1.0</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>gzip</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<fileExtensions>
+								<fileExtension>html</fileExtension>
+								<fileExtension>css</fileExtension>
+								<fileExtension>js</fileExtension>
+							</fileExtensions>
+						</configuration>
+					</plugin>
+
+				<!-- wro4j minimizes/massages the css/js files to speed browsers up -->
+					<plugin>
+						<groupId>ro.isdc.wro4j</groupId>
+						<artifactId>wro4j-maven-plugin</artifactId>
+						<version>${wro4j.version}</version>
+						<executions>
+							<execution>
+								<phase>compile</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<targetGroups>all,g1</targetGroups>
+							<wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory
+							</wroManagerFactory>
+							<options>IDs</options>
+							<ignoreMissingResources>false</ignoreMissingResources>
+							<destinationFolder>${basedir}/src/main/webapp/wro/
+							</destinationFolder>
+						</configuration>
+						<dependencies>
+							<dependency>
+								<groupId>ro.isdc.wro4j</groupId>
+								<artifactId>wro4j-extensions</artifactId>
+								<version>${wro4j.version}</version>
+							</dependency>
+						</dependencies>
+					</plugin>
+
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<build>
 		<resources>
@@ -203,7 +292,7 @@
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<version>7.2.2.v20101205</version>
+				<version>${jetty.version}</version>
 <!-- 				<version>8.0.0.M2</version>  -->
 				<configuration>
 					<scanIntervalSeconds>3</scanIntervalSeconds>
@@ -218,7 +307,8 @@
 						</systemProperty>
 						<systemProperty>
 							<name>log4j.configuration</name>
-							<value>file:${project.build.directory}/test-classes/jetty/log4j.properties</value>
+							<value>file:${project.build.directory}/test-classes/jetty/log4j.properties
+							</value>
 						</systemProperty>
 					</systemProperties>
 					<requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
@@ -229,21 +319,32 @@
 						<logTimeZone>GMT</logTimeZone>
 					</requestLog>
 					<webAppConfig>
-						<contextPath>/chessxls</contextPath>
-						<overrideDescriptor>${project.build.directory}/test-classes/jetty/deployment-context.xml</overrideDescriptor>
-						<jettyEnvXml>${project.build.directory}/test-classes/jetty/jetty-env.xml</jettyEnvXml>
+						<contextPath>/${project.artifactId}</contextPath>
+						<overrideDescriptor>${project.build.directory}/test-classes/jetty/deployment-context.xml
+						</overrideDescriptor>
+						<jettyEnvXml>${project.build.directory}/test-classes/jetty/jetty-env.xml
+						</jettyEnvXml>
 						<!-- addresses issue with ClassCastException -->
 						<!-- http://stackoverflow.com/questions/2538823/using-maven-and-embedded-jetty-classcastexception -->
 						<parentLoaderPriority>true</parentLoaderPriority>
+						<baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+              				<resourcesAsCSV>
+              					src/main/webapp,${project.build.directory}/${project.build.finalName}
+              				</resourcesAsCSV>
+            			</baseResource>
 					</webAppConfig>
-					<!-- <webAppSourceDirectory>${webappDirectory}</webAppSourceDirectory> -->
+<!-- 
+					<webAppSourceDirectory>${jettyResourcesDirectory}</webAppSourceDirectory>
+ -->					
 					<loginServices>
 						<loginService implementation="org.eclipse.jetty.security.HashLoginService">
 							<name>ChessXLS</name>
-							<config>file:${project.build.directory}/test-classes/jetty/realm.properties</config>
+							<config>file:${project.build.directory}/test-classes/jetty/realm.properties
+							</config>
 						</loginService>
 					</loginServices>
-					<jettyConfig>${project.build.directory}/test-classes/jetty/jetty-jmx.xml</jettyConfig>
+					<jettyConfig>${project.build.directory}/test-classes/jetty/jetty-jmx.xml
+					</jettyConfig>
 				</configuration>
 
 				<!-- determine which components we need at runtime with Jetty -->
@@ -271,7 +372,7 @@
 					<dependency>
 						<groupId>org.eclipse.jetty</groupId>
 						<artifactId>jetty-server</artifactId>
-						<version>7.2.2.v20101205</version>
+						<version>${jetty.version}</version>
 					</dependency>
 
 				</dependencies>
@@ -281,6 +382,8 @@
 			<!-- Helpful debugging hint: "mvn gwt:run" -->
 			<!-- For debugging with the full jetty container: start jetty with mvn 
 				package jetty:run, then start gwt with mvn package gwt:run -Dgwt.noserver=true -->
+			<!-- (in this project, the extra -DrunTarget=com.dstresarch.gwt.behaviors.ChessXlsBehaviors/ChessXlsBehaviors.html
+				is also required.) -->
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>gwt-maven-plugin</artifactId>
@@ -299,63 +402,15 @@
 				<!-- Plugin configuration. There are many available options, see gwt-maven-plugin 
 					documentation at codehaus.org -->
 				<configuration>
+					<webappDirectory>${webappDirectory}/js</webappDirectory>
 					<hostedWebapp>${webappDirectory}</hostedWebapp>
+					<deploy>${webappDirectory}/WEB-INF</deploy>
 					<!-- <i18nMessagesBundles> <i18nMessagesBundle>com.dstresearch.gwtSample.client.Messages</i18nMessagesBundle> 
 						</i18nMessagesBundles> -->
 					<noserver>true</noserver>
 					<!-- <compileReport>true</compileReport> -->
 					<extraJvmArgs>-Xmx1024M -Xss4096k </extraJvmArgs>
 				</configuration>
-			</plugin>
-
-			<!-- GZip the static resources (list after GWT) -->
-			<plugin>
-				<groupId>org.yuksnort.maven.plugins</groupId>
-				<artifactId>gzip-maven-plugin</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>gzip</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<fileExtensions>
-						<fileExtension>html</fileExtension>
-						<fileExtension>css</fileExtension>
-						<fileExtension>js</fileExtension>
-					</fileExtensions>
-				</configuration>
-			</plugin>
-
-		<!-- wro4j minimizes/massages the css/js files to speed browsers up -->
-			<plugin>
-				<groupId>ro.isdc.wro4j</groupId>
-				<artifactId>wro4j-maven-plugin</artifactId>
-				<version>${wro4j.version}</version>
-				<executions>
-					<execution>
-						<phase>compile</phase>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<targetGroups>all,g1</targetGroups>
-					<wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
-					<options>IDs</options>
-					<ignoreMissingResources>false</ignoreMissingResources>
-					<destinationFolder>${basedir}/src/main/webapp/wro/</destinationFolder>
-				</configuration>
-				<dependencies>
-					<dependency>
-						<groupId>ro.isdc.wro4j</groupId>
-						<artifactId>wro4j-extensions</artifactId>
-						<version>${wro4j.version}</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 
 		</plugins>
@@ -392,15 +447,25 @@
 			<version>1.2</version>
 			<scope>provided</scope>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
+
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
 			<version>1</version>
+		</dependency>
+
+		<!-- JSP Tag api's -->
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>javax.servlet.jsp-api</artifactId>
+			<version>2.2.1</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -444,11 +509,19 @@
 			<version>${mysql.version}</version>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.dstresearch</groupId>
 			<artifactId>servlet-helper</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.1.0</version>
+		</dependency>
+
+		<!-- GQuery is JQuery for GWT -->
+		<dependency>
+			<groupId>com.googlecode.gwtquery</groupId>
+			<artifactId>gwtquery</artifactId>
+			<version>1.1.0</version>
+			<scope>provided</scope>
 		</dependency>
 
 	</dependencies>
